@@ -1,9 +1,11 @@
 " VARIABLES
 
 let s:guifonts = {"gui_macvim": "Source Code Pro for Powerline:h11", "rest": "DejaVu_Sans_mono_for_Powerline:h8"}
-let s:hotkey_leaders = {"gui_macvim": "D", "rest": "A"}
+let s:thumb_keys = {"gui_macvim": "D", "rest": "A"}
 
 let s:alternate_switch = "<Tab>h"
+let s:alternate_switch_to_split = "<Tab>sh"
+let s:alternate_switch_to_vsplit = "<Tab>vh"
 
 let s:unite_file_rec = "<Tab>f"
 let s:unite_buffer = "<Tab>b"
@@ -14,28 +16,28 @@ let s:unite_open_in_split = "s"
 let s:unite_open_in_vsplit = "v"
 let s:unite_open_in_tab = "t"
 
-let s:visual_block = "<L-v>"
-let s:redo = "<L-r>"
-let s:screen_down = "<L-f>"
-let s:screen_up = "<L-b>"
-let s:page_down = "<L-d>"
-let s:page_up = "<L-u>"
-let s:scroll_down = "<L-e>"
-let s:scroll_up = "<L-y>"
-let s:window_cmd = "<L-w>"
-let s:redraw = "<L-l>"
+let s:visual_block = "<T-v>"
+let s:redo = "<T-r>"
+let s:screen_down = "<T-f>"
+let s:screen_up = "<T-b>"
+let s:page_down = "<T-d>"
+let s:page_up = "<T-u>"
+let s:scroll_down = "<T-e>"
+let s:scroll_up = "<T-y>"
+let s:window_cmd = "<T-w>"
+let s:redraw = "<T-l>"
 
 let s:jump_to_definition = "<CR>"
 let s:jump_back = "<Backspace>"
 
-let s:turn_off_current_search_highlight = "<L-8>"
-let s:update_file = "<L-p>"
-let s:force_update_file = "<L-P>"
+let s:turn_off_current_search_highlight = "<T-8>"
+let s:update_file = "<T-p>"
+let s:force_update_file = "<T-P>"
 
-let s:tab_new = "<L-t>"
-let s:tab_next = "<L-}>"
-let s:tab_prev = "<L-{>"
-let s:tab_close = "<L-w>"
+let s:tab_new = "<T-t>"
+let s:tab_next = "<T-}>"
+let s:tab_prev = "<T-{>"
+let s:tab_close = "<T-w>"
 
 
 " BASIC FUNCTIONS
@@ -55,20 +57,20 @@ function! s:PlatformValue(dictionary)
 endfunction
 
 
-function! s:HotkeyWithLeader(hotkey)
-	return substitute(a:hotkey, "<L-", "<".s:hotkey_leader."-", "")
+function! s:HotkeyWithThumbKey(hotkey)
+	return substitute(a:hotkey, "<T-", "<".s:thumb_key."-", "")
 endfunction
 
 function! s:NoReMap(mapArguments, hotkey, command)
-	execute "noremap ".a:mapArguments." ".s:HotkeyWithLeader(a:hotkey)." ".a:command
+	execute "noremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 function! s:NNoReMap(mapArguments, hotkey, command)
-	execute "nnoremap ".a:mapArguments." ".s:HotkeyWithLeader(a:hotkey)." ".a:command
+	execute "nnoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 function! s:VNoReMap(mapArguments, hotkey, command)
-	execute "vnoremap ".a:mapArguments." ".s:HotkeyWithLeader(a:hotkey)." ".a:command
+	execute "vnoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 
@@ -121,10 +123,10 @@ function! s:SetPluginsGVim()
 
 		NeoBundleFetch "Shougo/neobundle.vim"
 		NeoBundle "Shougo/vimproc.vim", {"build" : {
-				\ "windows" : "tools\\update-dll-mingw",
-				\ "cygwin" : "make -f make_cygwin.mak",
-				\ "mac" : "make -f make_mac.mak",
-				\ "unix" : "make -f make_unix.mak",
+				\ "windows": "tools\\update-dll-mingw",
+				\ "cygwin": "make -f make_cygwin.mak",
+				\ "mac": "make -f make_mac.mak",
+				\ "unix": "make -f make_unix.mak",
 			\ },
 		\ }
 		NeoBundle "Shougo/unite.vim"
@@ -142,6 +144,8 @@ function! s:SetPluginsGVim()
 
 	" alternate
 	call s:NNoReMap("<silent>", s:alternate_switch, ":A <CR>")
+	call s:NNoReMap("<silent>", s:alternate_switch_to_split, ":AS <CR>")
+	call s:NNoReMap("<silent>", s:alternate_switch_to_vsplit, ":AV <CR>")
 
 	let g:alternateNoDefaultAlternate = 1
 
@@ -222,19 +226,19 @@ function! s:SetTerminalVim()
 	set showmode
 endfunction
 
-function! s:BufWinEnterHandler()
+function! s:AuCmdBufWinEnterHandler()
 	if strpart(@%, 0, 9) != "[unite] -"
 		match TrailingWhitespace /\s\+$/
 	endif
 endfunction
 
-function! s:InsertEnterHandler()
+function! s:AuCmdInsertEnterHandler()
 	if strpart(@%, 0, 9) != "[unite] -"
 		match TrailingWhitespace /\s\+\%#\@<!$/
 	endif
 endfunction
 
-function! s:InsertLeaveHandler()
+function! s:AuCmdInsertLeaveHandler()
 	if strpart(@%, 0, 9) != "[unite] -"
 		match TrailingWhitespace /\s\+$/
 	endif
@@ -246,7 +250,7 @@ function! s:SetGVim()
 
 	let &guifont = s:PlatformValue(s:guifonts)
 
-	let s:hotkey_leader = s:PlatformValue(s:hotkey_leaders)
+	let s:thumb_key = s:PlatformValue(s:thumb_keys)
 
 	set guioptions-=T
 	set guioptions-=m
@@ -262,7 +266,9 @@ function! s:SetGVim()
 	augroup END
 
 	color inksplash
-	set transparency=5
+	if has("transparency")
+		set transparency=5
+	endif
 
 "	" solarized
 "	color solarized
@@ -271,15 +277,17 @@ function! s:SetGVim()
 
 	match TrailingWhitespace /\s\+$/
 	augroup AuGroupTrailingWhitespace
-		autocmd BufWinEnter * call s:BufWinEnterHandler()
-		autocmd InsertEnter * call s:InsertEnterHandler()
-		autocmd InsertLeave * call s:InsertLeaveHandler()
+		autocmd BufWinEnter * call s:AuCmdBufWinEnterHandler()
+		autocmd InsertEnter * call s:AuCmdInsertEnterHandler()
+		autocmd InsertLeave * call s:AuCmdInsertLeaveHandler()
 		autocmd BufWinLeave * call clearmatches()
 	augroup END
 endfunction
 
 
 " SETTINGS
+
+set runtimepath+=~/.vim
 
 set nocompatible
 
