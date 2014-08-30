@@ -71,19 +71,19 @@ function! s:HotkeyWithThumbKey(hotkey)
 endfunction
 
 function! s:NoReMap(mapArguments, hotkey, command)
-	execute "noremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+	execute "noremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 function! s:NNoReMap(mapArguments, hotkey, command)
-	execute "nnoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+	execute "nnoremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 function! s:INoReMap(mapArguments, hotkey, command)
-	execute "inoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+	execute "inoremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 function! s:VNoReMap(mapArguments, hotkey, command)
-	execute "vnoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+	execute "vnoremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 
@@ -91,40 +91,40 @@ endfunction
 
 function! s:SetGlobalMappings()
 	" More convinient key maps, than standard one's
-	call s:NNoReMap("<silent>", s:visual_block, "<C-v>")
-	call s:VNoReMap("<silent>", s:visual_block, "<C-v>")
-	call s:NNoReMap("<silent>", s:redo, ":redo <CR>")
-	call s:NoReMap("<silent>", s:screen_down, "<C-f>")
-	call s:NoReMap("<silent>", s:screen_up, "<C-b>")
-	call s:NoReMap("<silent>", s:page_down, "<C-d>")
-	call s:NoReMap("<silent>", s:page_up, "<C-u>")
-	call s:NoReMap("<silent>", s:scroll_down, "<C-e>")
-	call s:NoReMap("<silent>", s:scroll_up, "<C-y>")
-	call s:NoReMap("<silent>", s:window_cmd, "<C-w>")
-	call s:NoReMap("<silent>", s:redraw, "<C-l>")
+	call s:NNoReMap("", s:visual_block, "<C-v>")
+	call s:VNoReMap("", s:visual_block, "<C-v>")
+	call s:NNoReMap("", s:redo, ":redo <CR>")
+	call s:NoReMap("", s:screen_down, "<C-f>")
+	call s:NoReMap("", s:screen_up, "<C-b>")
+	call s:NoReMap("", s:page_down, "<C-d>")
+	call s:NoReMap("", s:page_up, "<C-u>")
+	call s:NoReMap("", s:scroll_down, "<C-e>")
+	call s:NoReMap("", s:scroll_up, "<C-y>")
+	call s:NoReMap("", s:window_cmd, "<C-w>")
+	call s:NoReMap("", s:redraw, "<C-l>")
 
-	call s:NNoReMap("<silent>", s:jump_to_definition, "<C-]>")
-	call s:NNoReMap("<silent>", s:jump_back, "<C-t>")
+	call s:NNoReMap("", s:jump_to_definition, "<C-]>")
+	call s:NNoReMap("", s:jump_back, "<C-t>")
 
 	" User Hotkeys
-	call s:NNoReMap("<silent>", s:turn_off_current_search_highlight, ":nohlsearch <CR>")
-	call s:NNoReMap("<silent>", s:update_file, ":e <CR>")
-	call s:NNoReMap("<silent>", s:force_update_file, ":e! <CR>")
+	call s:NNoReMap("", s:turn_off_current_search_highlight, ":nohlsearch <CR>")
+	call s:NNoReMap("", s:update_file, ":e <CR>")
+	call s:NNoReMap("", s:force_update_file, ":e! <CR>")
 
 	" Tab hotkeys
 	if !has("gui_macvim")
-		call s:NNoReMap("<silent>", s:tab_new, ":tabnew <CR>")
-		call s:NNoReMap("<silent>", s:tab_next, ":tabnext <CR>")
-		call s:NNoReMap("<silent>", s:tab_prev, ":tabprev <CR>")
-		call s:NNoReMap("<silent>", s:tab_close, ":tabclose <CR>")
+		call s:NNoReMap("", s:tab_new, ":tabnew <CR>")
+		call s:NNoReMap("", s:tab_next, ":tabnext <CR>")
+		call s:NNoReMap("", s:tab_prev, ":tabprev <CR>")
+		call s:NNoReMap("", s:tab_close, ":tabclose <CR>")
 	endif
 endfunction
 
 
 function! s:SetupUniteMappings()
-	call s:NNoReMap("<silent><buffer><expr>", s:unite_open_in_split, "unite#do_action('split')")
-	call s:NNoReMap("<silent><buffer><expr>", s:unite_open_in_vsplit, "unite#do_action('vsplit')")
-	call s:NNoReMap("<silent><buffer><expr>", s:unite_open_in_tab, "unite#do_action('tabopen')")
+	call s:NNoReMap("<buffer><expr>", s:unite_open_in_split, "unite#do_action('split')")
+	call s:NNoReMap("<buffer><expr>", s:unite_open_in_vsplit, "unite#do_action('vsplit')")
+	call s:NNoReMap("<buffer><expr>", s:unite_open_in_tab, "unite#do_action('tabopen')")
 endfunction
 
 function! s:SetBufferMappings()
@@ -133,32 +133,32 @@ function! s:SetBufferMappings()
 	endif
 
 	" alternate
-	call s:NNoReMap("<silent><buffer>", s:alternate_switch, ":A <CR>")
-	call s:NNoReMap("<silent><buffer>", s:alternate_switch_to_split, ":AS <CR>")
-	call s:NNoReMap("<silent><buffer>", s:alternate_switch_to_vsplit, ":AV <CR>")
+	call s:NNoReMap("<buffer>", s:alternate_switch, ":A <CR>")
+	call s:NNoReMap("<buffer>", s:alternate_switch_to_split, ":AS <CR>")
+	call s:NNoReMap("<buffer>", s:alternate_switch_to_vsplit, ":AV <CR>")
 
 	" unite
 	if has("gui_macvim")
-		call s:NNoReMap("<silent><buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec/async <CR>")
+		call s:NNoReMap("<buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec/async <CR>")
 	elseif has("gui_win32")
-		call s:NNoReMap("<silent><buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec <CR>")
+		call s:NNoReMap("<buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec <CR>")
 	endif
-	call s:NNoReMap("<silent><buffer>", s:unite_buffer, ":Unite -buffer-name=Recent buffer <CR>")
-	call s:NNoReMap("<silent><buffer>", s:unite_file_mru, ":Unite -buffer-name=Recent file_mru <CR>")
-	call s:NNoReMap("<silent><buffer>", s:unite_grep, ":Unite -buffer-name=Grep grep:. <CR>")
-	call s:VNoReMap("<silent><buffer>", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
-	call s:NNoReMap("<silent><buffer>", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
+	call s:NNoReMap("<buffer>", s:unite_buffer, ":Unite -buffer-name=Recent buffer <CR>")
+	call s:NNoReMap("<buffer>", s:unite_file_mru, ":Unite -buffer-name=Recent file_mru <CR>")
+	call s:NNoReMap("<buffer>", s:unite_grep, ":Unite -buffer-name=Grep grep:. <CR>")
+	call s:VNoReMap("<buffer>", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
+	call s:NNoReMap("<buffer>", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
 
 	" neocomplcache
-	call s:INoReMap("<silent><buffer><expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
+	call s:INoReMap("<buffer><expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
 
 	" CamelCaseMotion
-	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
-	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
-	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
-	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
-	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
-	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
+	"call s:NoReMap("<buffer>", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
+	"call s:NoReMap("<buffer>", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
+	"call s:NoReMap("<buffer>", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
+	"call s:NoReMap("<buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
+	"call s:NoReMap("<buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
+	"call s:NoReMap("<buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
 endfunction
 
 
