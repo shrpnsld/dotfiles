@@ -117,18 +117,19 @@ function! s:SetUniteForCurrentBuffer()
 endfunction
 
 function! s:SetPluginsGVim()
+	" neobundle
 	if has('vim_starting')
 		set runtimepath+=~/.vim/bundle/neobundle.vim/
 		call neobundle#begin(expand("~/.vim/bundle/"))
 
 		NeoBundleFetch "Shougo/neobundle.vim"
 		NeoBundle "Shougo/vimproc.vim", {"build" : {
-				\ "windows": "tools\\update-dll-mingw",
-				\ "cygwin": "make -f make_cygwin.mak",
-				\ "mac": "make -f make_mac.mak",
-				\ "unix": "make -f make_unix.mak",
-			\ },
-		\ }
+					\ "windows": "tools\\update-dll-mingw",
+					\ "cygwin": "make -f make_cygwin.mak",
+					\ "mac": "make -f make_mac.mak",
+					\ "unix": "make -f make_unix.mak",
+				\ },
+			\ }
 		NeoBundle "Shougo/unite.vim"
 		NeoBundle "Shougo/neomru.vim"
 		NeoBundle "hewes/unite-gtags"
@@ -137,6 +138,7 @@ function! s:SetPluginsGVim()
 		NeoBundle "dantler/vim-alternate"
 		NeoBundle "bling/vim-airline"
 		NeoBundle "altercation/vim-colors-solarized"
+		NeoBundle "bkad/CamelCaseMotion"
 
 		call neobundle#end()
 		filetype plugin indent on
@@ -197,7 +199,19 @@ function! s:SetPluginsGVim()
 		autocmd FileType unite call s:SetUniteForCurrentBuffer()
 	augroup END
 
+	" neocomplcache
 	let g:neocomplcache_enable_at_startup = 1
+	let g:neocomplcache_disable_auto_complete = 1
+	let g:neocomplcache_use_vimproc = 1
+	inoremap <expr> <D-c> neocomplcache#start_manual_complete(["tags_complete", "buffer_complete", "vim_complete"])
+
+	" CamelCaseMotion
+	map <silent> \w <Plug>CamelCaseMotion_w
+	map <silent> \b <Plug>CamelCaseMotion_b
+	map <silent> \e <Plug>CamelCaseMotion_e
+	map <silent> i\w <Plug>CamelCaseMotion_iw
+	map <silent> i\b <Plug>CamelCaseMotion_ib
+	map <silent> i\e <Plug>CamelCaseMotion_ie
 endfunction
 
 
