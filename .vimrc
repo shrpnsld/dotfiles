@@ -16,6 +16,15 @@ let s:unite_open_in_split = "s"
 let s:unite_open_in_vsplit = "v"
 let s:unite_open_in_tab = "t"
 
+let s:neocomplcache_manual_complete = "<T-c>"
+
+let s:camelcasemotion_w = "<Space>w"
+let s:camelcasemotion_b = "<Space>b"
+let s:camelcasemotion_e = "<Space>e"
+let s:camelcasemotion_iw = "i<Space>w"
+let s:camelcasemotion_ib = "i<Space>b"
+let s:camelcasemotion_ie = "i<Space>e"
+
 let s:visual_block = "<T-v>"
 let s:redo = "<T-r>"
 let s:screen_down = "<T-f>"
@@ -69,14 +78,18 @@ function! s:NNoReMap(mapArguments, hotkey, command)
 	execute "nnoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
+function! s:INoReMap(mapArguments, hotkey, command)
+	execute "inoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+endfunction
+
 function! s:VNoReMap(mapArguments, hotkey, command)
 	execute "vnoremap ".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 
-" SPLITS
+" MAPPINGS
 
-function! s:MapKeys()
+function! s:SetGlobalMappings()
 	" More convinient key maps, than standard one's
 	call s:NNoReMap("<silent>", s:visual_block, "<C-v>")
 	call s:VNoReMap("<silent>", s:visual_block, "<C-v>")
@@ -108,13 +121,48 @@ function! s:MapKeys()
 endfunction
 
 
-" PLUGINS
-
-function! s:SetUniteForCurrentBuffer()
+function! s:SetupUniteMappings()
 	call s:NNoReMap("<silent><buffer><expr>", s:unite_open_in_split, "unite#do_action('split')")
 	call s:NNoReMap("<silent><buffer><expr>", s:unite_open_in_vsplit, "unite#do_action('vsplit')")
 	call s:NNoReMap("<silent><buffer><expr>", s:unite_open_in_tab, "unite#do_action('tabopen')")
 endfunction
+
+function! s:SetBufferMappings()
+	if strpart(@%, 0, 9) == "[unite] -"
+		return
+	endif
+
+	" alternate
+	call s:NNoReMap("<silent><buffer>", s:alternate_switch, ":A <CR>")
+	call s:NNoReMap("<silent><buffer>", s:alternate_switch_to_split, ":AS <CR>")
+	call s:NNoReMap("<silent><buffer>", s:alternate_switch_to_vsplit, ":AV <CR>")
+
+	" unite
+	if has("gui_macvim")
+		call s:NNoReMap("<silent><buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec/async <CR>")
+	elseif has("gui_win32")
+		call s:NNoReMap("<silent><buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec <CR>")
+	endif
+	call s:NNoReMap("<silent><buffer>", s:unite_buffer, ":Unite -buffer-name=Recent buffer <CR>")
+	call s:NNoReMap("<silent><buffer>", s:unite_file_mru, ":Unite -buffer-name=Recent file_mru <CR>")
+	call s:NNoReMap("<silent><buffer>", s:unite_grep, ":Unite -buffer-name=Grep grep:. <CR>")
+	call s:VNoReMap("<silent><buffer>", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
+	call s:NNoReMap("<silent><buffer>", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
+
+	" neocomplcache
+	call s:INoReMap("<silent><buffer><expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
+
+	" CamelCaseMotion
+	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
+	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
+	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
+	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
+	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
+	"call s:NoReMap("<silent><buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
+endfunction
+
+
+" PLUGINS
 
 function! s:SetPluginsGVim()
 	" neobundle
@@ -138,17 +186,13 @@ function! s:SetPluginsGVim()
 		NeoBundle "dantler/vim-alternate"
 		NeoBundle "bling/vim-airline"
 		NeoBundle "altercation/vim-colors-solarized"
-		NeoBundle "bkad/CamelCaseMotion"
+		"NeoBundle "bkad/CamelCaseMotion"
 
 		call neobundle#end()
 		filetype plugin indent on
 	endif
 
 	" alternate
-	call s:NNoReMap("<silent>", s:alternate_switch, ":A <CR>")
-	call s:NNoReMap("<silent>", s:alternate_switch_to_split, ":AS <CR>")
-	call s:NNoReMap("<silent>", s:alternate_switch_to_vsplit, ":AV <CR>")
-
 	let g:alternateNoDefaultAlternate = 1
 
 	" alternate: C/C++/Objective-C
@@ -184,34 +228,10 @@ function! s:SetPluginsGVim()
 	call unite#filters#sorter_default#use(["sorter_rank"])
 	let g:unite_source_grep_recursive_opt = "-R"
 
-	if has("gui_macvim")
-		call s:NNoReMap("<silent>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec/async <CR>")
-	elseif has("gui_win32")
-		call s:NNoReMap("<silent>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec <CR>")
-	endif
-	call s:NNoReMap("<silent>", s:unite_buffer, ":Unite -buffer-name=Recent buffer <CR>")
-	call s:NNoReMap("<silent>", s:unite_file_mru, ":Unite -buffer-name=Recent file_mru <CR>")
-	call s:NNoReMap("<silent>", s:unite_grep, ":Unite -buffer-name=Grep grep:. <CR>")
-	call s:VNoReMap("<silent>", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
-	call s:NNoReMap("<silent>", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
-
-	augroup AuGroupUnite
-		autocmd FileType unite call s:SetUniteForCurrentBuffer()
-	augroup END
-
 	" neocomplcache
 	let g:neocomplcache_enable_at_startup = 1
 	let g:neocomplcache_disable_auto_complete = 1
 	let g:neocomplcache_use_vimproc = 1
-	inoremap <expr> <D-c> neocomplcache#start_manual_complete(["tags_complete", "buffer_complete", "vim_complete"])
-
-	" CamelCaseMotion
-	map <silent> \w <Plug>CamelCaseMotion_w
-	map <silent> \b <Plug>CamelCaseMotion_b
-	map <silent> \e <Plug>CamelCaseMotion_e
-	map <silent> i\w <Plug>CamelCaseMotion_iw
-	map <silent> i\b <Plug>CamelCaseMotion_ib
-	map <silent> i\e <Plug>CamelCaseMotion_ie
 endfunction
 
 
@@ -296,6 +316,14 @@ function! s:SetGVim()
 		autocmd InsertLeave * call s:AuCmdInsertLeaveHandler()
 		autocmd BufWinLeave * call clearmatches()
 	augroup END
+
+	augroup AuGroupUnite
+		autocmd FileType unite call s:SetupUniteMappings()
+	augroup END
+
+	augroup AuGroupGeneralBuffer
+		autocmd BufEnter * call s:SetBufferMappings()
+	augroup END
 endfunction
 
 
@@ -328,7 +356,7 @@ syntax on
 
 if has("gui_running")
 	call s:SetGVim()
-	call s:MapKeys()
+	call s:SetGlobalMappings()
 	call s:SetPluginsGVim()
 else
 	call s:SetTerminalVim()
