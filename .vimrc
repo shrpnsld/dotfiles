@@ -70,6 +70,10 @@ function! s:HotkeyWithThumbKey(hotkey)
 	return substitute(a:hotkey, "<T-", "<".s:thumb_key."-", "")
 endfunction
 
+function! s:Map(mapArguments, hotkey, command)
+	execute "map <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+endfunction
+
 function! s:NoReMap(mapArguments, hotkey, command)
 	execute "noremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
@@ -84,6 +88,18 @@ endfunction
 
 function! s:VNoReMap(mapArguments, hotkey, command)
 	execute "vnoremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+endfunction
+
+function! s:OMap(mapArguments, hotkey, command)
+	execute "omap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+endfunction
+
+function! s:ONoReMap(mapArguments, hotkey, command)
+	execute "onoremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
+endfunction
+
+function! s:XMap(mapArguments, hotkey, command)
+	execute "xmap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
 
@@ -153,12 +169,15 @@ function! s:SetBufferMappings()
 	call s:INoReMap("<buffer><expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
 
 	" CamelCaseMotion
-	"call s:NoReMap("<buffer>", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
-	"call s:NoReMap("<buffer>", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
-	"call s:NoReMap("<buffer>", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
-	"call s:NoReMap("<buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
-	"call s:NoReMap("<buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
-	"call s:NoReMap("<buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
+	call s:Map("<buffer>", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
+	call s:Map("<buffer>", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
+	call s:Map("<buffer>", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
+	call s:OMap("<buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
+	call s:OMap("<buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
+	call s:OMap("<buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
+	call s:XMap("<buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
+	call s:XMap("<buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
+	call s:XMap("<buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
 endfunction
 
 
@@ -186,7 +205,7 @@ function! s:SetPluginsGVim()
 		NeoBundle "dantler/vim-alternate"
 		NeoBundle "bling/vim-airline"
 		NeoBundle "altercation/vim-colors-solarized"
-		"NeoBundle "bkad/CamelCaseMotion"
+		NeoBundle "bkad/CamelCaseMotion"
 
 		call neobundle#end()
 		filetype plugin indent on
