@@ -46,7 +46,6 @@ let s:force_update_file = "<T-P>"
 let s:tab_new = "<T-t>"
 let s:tab_next = "<T-}>"
 let s:tab_prev = "<T-{>"
-let s:tab_close = "<T-w>"
 
 
 " BASIC FUNCTIONS
@@ -132,7 +131,6 @@ function! s:SetGlobalMappings()
 		call s:NNoReMap("", s:tab_new, ":tabnew <CR>")
 		call s:NNoReMap("", s:tab_next, ":tabnext <CR>")
 		call s:NNoReMap("", s:tab_prev, ":tabprev <CR>")
-		call s:NNoReMap("", s:tab_close, ":tabclose <CR>")
 	endif
 endfunction
 
