@@ -339,7 +339,8 @@ function! s:SetGVim()
 	augroup END
 
 	augroup AuGroupGeneralBuffer
-		autocmd BufEnter * call s:SetBufferMappings()
+		autocmd FileType * call s:SetBufferMappings()
+		autocmd VimEnter * call s:SetBufferMappings()
 	augroup END
 endfunction
 
