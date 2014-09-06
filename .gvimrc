@@ -8,6 +8,9 @@ macmenu File.Close key=<nop>
 " <D-p> - update file
 macmenu File.Print key=<nop>
 
+" <D-c> - autocomplete
+macmenu Edit.Copy key=<nop>
+
 " <D-v> - visual block
 macmenu Edit.Paste key=<nop>
 
