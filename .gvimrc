@@ -2,6 +2,9 @@ if !has("gui_macvim")
 	finish
 endif
 
+" <D-o> - jump list
+macmenu File.Open\.\.\. key=<nop>
+
 " <D-w> - window command
 macmenu File.Close key=<nop>
 
