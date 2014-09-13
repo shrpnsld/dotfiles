@@ -35,6 +35,7 @@ let s:scroll_down = "<T-e>"
 let s:scroll_up = "<T-y>"
 let s:window_cmd = "<T-w>"
 let s:redraw = "<T-l>"
+let s:next_in_jump_list = "<T-o>"
 
 let s:jump_to_definition = "<CR>"
 let s:jump_back = "<Backspace>"
@@ -113,6 +114,7 @@ function! s:SetMappings()
 	call s:NoReMap("", s:scroll_up, "<C-y>")
 	call s:NoReMap("", s:window_cmd, "<C-w>")
 	call s:NoReMap("", s:redraw, "<C-l>")
+	call s:NoReMap("", s:next_in_jump_list, "<C-o>")
 
 	call s:NNoReMap("", s:jump_to_definition, "<C-]>")
 	call s:NNoReMap("", s:jump_back, "<C-t>")
