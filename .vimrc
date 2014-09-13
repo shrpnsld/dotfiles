@@ -3,27 +3,27 @@
 let s:guifonts = {"gui_macvim": "Source Code Pro for Powerline:h11", "rest": "DejaVu_Sans_mono_for_Powerline:h8"}
 let s:thumb_keys = {"gui_macvim": "D", "rest": "A"}
 
-let s:alternate_switch = "<Tab>h"
-let s:alternate_switch_to_split = "<Tab>sh"
-let s:alternate_switch_to_vsplit = "<Tab>vh"
+let s:alternate_switch = "<T-/>h"
+let s:alternate_switch_to_split = "<T-/>sh"
+let s:alternate_switch_to_vsplit = "<T-/>vh"
 
-let s:unite_file_rec = "<Tab>f"
-let s:unite_buffer = "<Tab>b"
-let s:unite_file_mru = "<Tab>m"
-let s:unite_grep = "<Tab>p"
-let s:unite_gtags = "<Tab>t"
+let s:unite_file_rec = "<T-/>f"
+let s:unite_buffer = "<T-/>b"
+let s:unite_file_mru = "<T-/>m"
+let s:unite_grep = "<T-/>p"
+let s:unite_gtags = "<T-/>t"
 let s:unite_open_in_split = "s"
 let s:unite_open_in_vsplit = "v"
 let s:unite_open_in_tab = "t"
 
 let s:neocomplcache_manual_complete = "<T-c>"
 
-let s:camelcasemotion_w = "<Space>w"
-let s:camelcasemotion_b = "<Space>b"
-let s:camelcasemotion_e = "<Space>e"
-let s:camelcasemotion_iw = "i<Space>w"
-let s:camelcasemotion_ib = "i<Space>b"
-let s:camelcasemotion_ie = "i<Space>e"
+let s:camelcasemotion_w = "<Leader>w"
+let s:camelcasemotion_b = "<Leader>b"
+let s:camelcasemotion_e = "<Leader>e"
+let s:camelcasemotion_iw = "i<Leader>w"
+let s:camelcasemotion_ib = "i<Leader>b"
+let s:camelcasemotion_ie = "i<Leader>e"
 
 let s:visual_block = "<T-v>"
 let s:redo = "<T-r>"
@@ -93,10 +93,6 @@ function! s:OMap(mapArguments, hotkey, command)
 	execute "omap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
 
-function! s:ONoReMap(mapArguments, hotkey, command)
-	execute "onoremap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
-endfunction
-
 function! s:XMap(mapArguments, hotkey, command)
 	execute "xmap <silent>".a:mapArguments." ".s:HotkeyWithThumbKey(a:hotkey)." ".a:command
 endfunction
@@ -104,7 +100,7 @@ endfunction
 
 " MAPPINGS
 
-function! s:SetGlobalMappings()
+function! s:SetMappings()
 	" More convinient key maps, than standard one's
 	call s:NNoReMap("", s:visual_block, "<C-v>")
 	call s:VNoReMap("", s:visual_block, "<C-v>")
@@ -121,17 +117,48 @@ function! s:SetGlobalMappings()
 	call s:NNoReMap("", s:jump_to_definition, "<C-]>")
 	call s:NNoReMap("", s:jump_back, "<C-t>")
 
-	" User Hotkeys
+	" My hotkeys
 	call s:NNoReMap("", s:turn_off_current_search_highlight, ":nohlsearch <CR>")
 	call s:NNoReMap("", s:update_file, ":e <CR>")
 	call s:NNoReMap("", s:force_update_file, ":e! <CR>")
 
-	" Tab hotkeys
+	" Tab hotkeys for gvim
 	if !has("gui_macvim")
 		call s:NNoReMap("", s:tab_new, ":tabnew <CR>")
 		call s:NNoReMap("", s:tab_next, ":tabnext <CR>")
 		call s:NNoReMap("", s:tab_prev, ":tabprev <CR>")
 	endif
+
+	" unite
+	if has("gui_macvim")
+		call s:NNoReMap("", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec/async <CR>")
+	elseif has("gui_win32")
+		call s:NNoReMap("", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec <CR>")
+	endif
+	call s:NNoReMap("", s:unite_buffer, ":Unite -buffer-name=Recent buffer <CR>")
+	call s:NNoReMap("", s:unite_file_mru, ":Unite -buffer-name=Recent file_mru <CR>")
+	call s:NNoReMap("", s:unite_grep, ":Unite -buffer-name=Grep grep:. <CR>")
+	call s:VNoReMap("", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
+	call s:NNoReMap("", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
+
+	" neocomplcache
+	call s:INoReMap("<expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
+
+	" alternate
+	call s:NNoReMap("", s:alternate_switch, ":A <CR>")
+	call s:NNoReMap("", s:alternate_switch_to_split, ":AS <CR>")
+	call s:NNoReMap("", s:alternate_switch_to_vsplit, ":AV <CR>")
+
+	" CamelCaseMotion
+	call s:Map("", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
+	call s:Map("", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
+	call s:Map("", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
+	call s:OMap("", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
+	call s:OMap("", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
+	call s:OMap("", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
+	call s:XMap("", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
+	call s:XMap("", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
+	call s:XMap("", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
 endfunction
 
 
@@ -139,43 +166,6 @@ function! s:SetupUniteMappings()
 	call s:NNoReMap("<buffer><expr>", s:unite_open_in_split, "unite#do_action('split')")
 	call s:NNoReMap("<buffer><expr>", s:unite_open_in_vsplit, "unite#do_action('vsplit')")
 	call s:NNoReMap("<buffer><expr>", s:unite_open_in_tab, "unite#do_action('tabopen')")
-endfunction
-
-function! s:SetBufferMappings()
-	if strpart(@%, 0, 9) == "[unite] -"
-		return
-	endif
-
-	" alternate
-	call s:NNoReMap("<buffer>", s:alternate_switch, ":A <CR>")
-	call s:NNoReMap("<buffer>", s:alternate_switch_to_split, ":AS <CR>")
-	call s:NNoReMap("<buffer>", s:alternate_switch_to_vsplit, ":AV <CR>")
-
-	" unite
-	if has("gui_macvim")
-		call s:NNoReMap("<buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec/async <CR>")
-	elseif has("gui_win32")
-		call s:NNoReMap("<buffer>", s:unite_file_rec, ":Unite -buffer-name=Files -start-insert file_rec <CR>")
-	endif
-	call s:NNoReMap("<buffer>", s:unite_buffer, ":Unite -buffer-name=Recent buffer <CR>")
-	call s:NNoReMap("<buffer>", s:unite_file_mru, ":Unite -buffer-name=Recent file_mru <CR>")
-	call s:NNoReMap("<buffer>", s:unite_grep, ":Unite -buffer-name=Grep grep:. <CR>")
-	call s:VNoReMap("<buffer>", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
-	call s:NNoReMap("<buffer>", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
-
-	" neocomplcache
-	call s:INoReMap("<buffer><expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
-
-	" CamelCaseMotion
-	call s:Map("<buffer>", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
-	call s:Map("<buffer>", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
-	call s:Map("<buffer>", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
-	call s:OMap("<buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
-	call s:OMap("<buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
-	call s:OMap("<buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
-	call s:XMap("<buffer>", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
-	call s:XMap("<buffer>", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
-	call s:XMap("<buffer>", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
 endfunction
 
 
@@ -337,11 +327,6 @@ function! s:SetGVim()
 	augroup AuGroupUnite
 		autocmd FileType unite call s:SetupUniteMappings()
 	augroup END
-
-	augroup AuGroupGeneralBuffer
-		autocmd FileType * call s:SetBufferMappings()
-		autocmd VimEnter * call s:SetBufferMappings()
-	augroup END
 endfunction
 
 
@@ -374,7 +359,7 @@ syntax on
 
 if has("gui_running")
 	call s:SetGVim()
-	call s:SetGlobalMappings()
+	call s:SetMappings()
 	call s:SetPluginsGVim()
 else
 	call s:SetTerminalVim()
