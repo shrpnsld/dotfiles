@@ -306,6 +306,7 @@ function! s:SetGVim()
 	set autoread
 	augroup AuGroupAutoSave
 		autocmd TextChanged * call s:GentleSave()
+		autocmd TextChangedI * call s:GentleSave()
 	augroup END
 
 	color inksplash
