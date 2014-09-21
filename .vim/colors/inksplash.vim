@@ -49,9 +49,7 @@ hi DiffChange     gui=NONE   guifg=#ffffcd   guibg=#306b8f
 hi DiffDelete     gui=NONE   guifg=#ffffcd   guibg=#6d3030
 hi DiffAdd        gui=NONE   guifg=#ffffcd   guibg=#306d30
 
-hi Cursor         gui=NONE   guifg=#404040   guibg=#8b8bff
-hi lCursor        gui=NONE   guifg=#404040   guibg=#8fff8b
-hi CursorIM       gui=NONE   guifg=#404040   guibg=#8b8bff
+hi Cursor         gui=NONE   guifg=#404040   guibg=#dedee7
 
 hi Folded         gui=NONE   guifg=#cfcfcd   guibg=#4b208f
 hi FoldColumn     gui=NONE   guifg=#8b8bcd   guibg=#2e2e2e
