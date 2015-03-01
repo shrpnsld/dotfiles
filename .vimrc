@@ -315,9 +315,10 @@ function! s:SetGVim()
 	endif
 
 "	" solarized
-"	color solarized
 "	set background=dark
+"	let g:solarized_visibility = "high"
 "	let g:solarized_contrast = "high"
+"	color solarized
 
 	match TrailingWhitespace /\s\+$/
 	augroup AuGroupTrailingWhitespace
