@@ -3,27 +3,20 @@
 let s:guifonts = {"gui_macvim": "Source Code Pro for Powerline:h11", "rest": "DejaVu_Sans_mono_for_Powerline:h8"}
 let s:thumb_keys = {"gui_macvim": "D", "rest": "A"}
 
-let s:alternate_switch = "<T-/>h"
-let s:alternate_switch_to_split = "<T-/>sh"
-let s:alternate_switch_to_vsplit = "<T-/>vh"
+let s:alternate_switch = "<Leader>h"
+let s:alternate_switch_to_split = "<Leader>s"
+let s:alternate_switch_to_vsplit = "<Leader>v"
 
-let s:unite_file_rec = "<T-/>f"
-let s:unite_buffer = "<T-/>b"
-let s:unite_file_mru = "<T-/>m"
-let s:unite_grep = "<T-/>p"
-let s:unite_gtags = "<T-/>t"
+let s:unite_file_rec = "<Leader>f"
+let s:unite_buffer = "<Leader>b"
+let s:unite_file_mru = "<Leader>m"
+let s:unite_grep = "<Leader>p"
+let s:unite_gtags = "<Leader>t"
 let s:unite_open_in_split = "s"
 let s:unite_open_in_vsplit = "v"
 let s:unite_open_in_tab = "t"
 
 let s:neocomplcache_manual_complete = "<T-c>"
-
-let s:camelcasemotion_w = "<Leader>w"
-let s:camelcasemotion_b = "<Leader>b"
-let s:camelcasemotion_e = "<Leader>e"
-let s:camelcasemotion_iw = "i<Leader>w"
-let s:camelcasemotion_ib = "i<Leader>b"
-let s:camelcasemotion_ie = "i<Leader>e"
 
 let s:visual_block = "<T-v>"
 let s:redo = "<T-r>"
@@ -150,17 +143,6 @@ function! s:SetMappings()
 	call s:NNoReMap("", s:alternate_switch, ":A <CR>")
 	call s:NNoReMap("", s:alternate_switch_to_split, ":AS <CR>")
 	call s:NNoReMap("", s:alternate_switch_to_vsplit, ":AV <CR>")
-
-	" CamelCaseMotion
-	call s:Map("", s:camelcasemotion_w, "<Plug>CamelCaseMotion_w")
-	call s:Map("", s:camelcasemotion_b, "<Plug>CamelCaseMotion_b")
-	call s:Map("", s:camelcasemotion_e, "<Plug>CamelCaseMotion_e")
-	call s:OMap("", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
-	call s:OMap("", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
-	call s:OMap("", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
-	call s:XMap("", s:camelcasemotion_iw, "<Plug>CamelCaseMotion_iw")
-	call s:XMap("", s:camelcasemotion_ib, "<Plug>CamelCaseMotion_ib")
-	call s:XMap("", s:camelcasemotion_ie, "<Plug>CamelCaseMotion_ie")
 endfunction
 
 
@@ -195,11 +177,18 @@ function! s:SetPluginsGVim()
 		NeoBundle "dantler/vim-alternate"
 		NeoBundle "bling/vim-airline"
 		NeoBundle "altercation/vim-colors-solarized"
-		NeoBundle "bkad/CamelCaseMotion"
+		NeoBundle "chrisbra/vim-diff-enhanced"
+		NeoBundle "mhinz/vim-startify"
 
 		call neobundle#end()
 		filetype plugin indent on
 	endif
+
+	" startify
+    let g:startify_files_number = 0
+    let g:startify_custom_header = map(split(system('fortune | cowsay'), '\n'), '"   ". v:val') + ['','']
+
+    let g:startify_custom_footer = ""
 
 	" alternate
 	let g:alternateNoDefaultAlternate = 1
