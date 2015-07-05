@@ -16,8 +16,6 @@ let s:unite_open_in_split = "s"
 let s:unite_open_in_vsplit = "v"
 let s:unite_open_in_tab = "t"
 
-let s:neocomplcache_manual_complete = "<T-c>"
-
 let s:visual_block = "<T-v>"
 let s:redo = "<T-r>"
 let s:screen_down = "<T-f>"
@@ -136,9 +134,6 @@ function! s:SetMappings()
 	call s:VNoReMap("", s:unite_grep, ":<C-U>call <SID>UniteGrepSelection() <CR>")
 	call s:NNoReMap("", s:unite_gtags, ":Unite -buffer-name=Tags -start-insert -default-action=jump gtags/completion <CR>")
 
-	" neocomplcache
-	call s:INoReMap("<expr>", s:neocomplcache_manual_complete, "neocomplcache#start_manual_complete(['tags_complete', 'buffer_complete', 'vim_complete'])")
-
 	" alternate
 	call s:NNoReMap("", s:alternate_switch, ":A <CR>")
 	call s:NNoReMap("", s:alternate_switch_to_split, ":AS <CR>")
@@ -161,27 +156,27 @@ function! s:SetPluginsGVim()
 		set runtimepath+=~/.vim/bundle/neobundle.vim/
 		call neobundle#begin(expand("~/.vim/bundle/"))
 
-		NeoBundleFetch "Shougo/neobundle.vim"
-		NeoBundle "Shougo/vimproc.vim", {"build" : {
-					\ "windows": "tools\\update-dll-mingw",
-					\ "cygwin": "make -f make_cygwin.mak",
-					\ "mac": "make -f make_mac.mak",
-					\ "unix": "make -f make_unix.mak",
+		NeoBundleFetch 'Shougo/neobundle.vim'
+		NeoBundle 'Shougo/vimproc.vim', {'build' : {
+					\ 'windows': 'tools\\update-dll-mingw',
+					\ 'cygwin': 'make -f make_cygwin.mak',
+					\ 'mac': 'make -f make_mac.mak',
+					\ 'unix': 'make -f make_unix.mak',
 				\ },
 			\ }
-		NeoBundle "Shougo/unite.vim"
-		NeoBundle "Shougo/neomru.vim"
-		NeoBundle "hewes/unite-gtags"
-		NeoBundle "vim-scripts/gtags.vim"
-		NeoBundle "Shougo/neocomplcache"
-		NeoBundle "dantler/vim-alternate"
-		NeoBundle "bling/vim-airline"
-		NeoBundle "altercation/vim-colors-solarized"
-		NeoBundle "chrisbra/vim-diff-enhanced"
-		NeoBundle "mhinz/vim-startify"
+		NeoBundle 'Shougo/unite.vim'
+		NeoBundle 'Shougo/neomru.vim'
+		NeoBundle 'hewes/unite-gtags'
+		NeoBundle 'vim-scripts/gtags.vim'
+		NeoBundle 'dantler/vim-alternate'
+		NeoBundle 'bling/vim-airline'
+		NeoBundle 'altercation/vim-colors-solarized'
+		NeoBundle 'chrisbra/vim-diff-enhanced'
+		NeoBundle 'mhinz/vim-startify'
 
 		call neobundle#end()
 		filetype plugin indent on
+		autocmd BufNewFile,BufRead * setlocal formatoptions=tcq
 	endif
 
 	" startify
@@ -225,11 +220,6 @@ function! s:SetPluginsGVim()
 	call unite#filters#matcher_default#use(["matcher_fuzzy"])
 	call unite#filters#sorter_default#use(["sorter_rank"])
 	let g:unite_source_grep_recursive_opt = "-R"
-
-	" neocomplcache
-	let g:neocomplcache_enable_at_startup = 1
-	let g:neocomplcache_disable_auto_complete = 1
-	let g:neocomplcache_use_vimproc = 1
 endfunction
 
 
@@ -298,24 +288,24 @@ function! s:SetGVim()
 		autocmd TextChangedI * call s:GentleSave()
 	augroup END
 
-	color inksplash
-	if has("transparency")
-		set transparency=5
-	endif
+"	color inksplash
+"	if has("transparency")
+"		set transparency=5
+"	endif
 
-"	" solarized
-"	set background=dark
-"	let g:solarized_visibility = "high"
-"	let g:solarized_contrast = "high"
-"	color solarized
+	" solarized
+	set background=dark
+	let g:solarized_visibility = "high"
+	let g:solarized_contrast = "high"
+	color solarized
 
-	match TrailingWhitespace /\s\+$/
-	augroup AuGroupTrailingWhitespace
-		autocmd BufWinEnter * call s:AuCmdBufWinEnterHandler()
-		autocmd InsertEnter * call s:AuCmdInsertEnterHandler()
-		autocmd InsertLeave * call s:AuCmdInsertLeaveHandler()
-		autocmd BufWinLeave * call clearmatches()
-	augroup END
+"	match TrailingWhitespace /\s\+$/
+"	augroup AuGroupTrailingWhitespace
+"		autocmd BufWinEnter * call s:AuCmdBufWinEnterHandler()
+"		autocmd InsertEnter * call s:AuCmdInsertEnterHandler()
+"		autocmd InsertLeave * call s:AuCmdInsertLeaveHandler()
+"		autocmd BufWinLeave * call clearmatches()
+"	augroup END
 
 	augroup AuGroupUnite
 		autocmd FileType unite call s:SetupUniteMappings()
@@ -336,6 +326,7 @@ set number
 
 set tabstop=4
 set shiftwidth=4
+set autoindent
 set smartindent
 set wrap
 set scrolloff=5
@@ -354,6 +345,8 @@ if has("gui_running")
 	call s:SetGVim()
 	call s:SetMappings()
 	call s:SetPluginsGVim()
+
+	set formatoptions=tcq
 else
 	call s:SetTerminalVim()
 endif
