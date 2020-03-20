@@ -1,2 +1,1 @@
-PS1="\u@\H:\w$ "
-
+source ~/.bashrc
