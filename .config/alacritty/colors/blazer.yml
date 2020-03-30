@@ -1,0 +1,35 @@
+# Colors (Blazer)
+colors:
+  # Default colors
+  primary:
+    background: '#0e1621'
+    foreground: '#dbe6f1'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '#dbe6f1'
+    cursor: '#dbe6f1'
+
+  # Normal colors
+  normal:
+    black:   '#000000'
+    red:     '#af7d7b'
+    green:   '#88b580'
+    yellow:  '#b8b781'
+    blue:    '#797bb3'
+    magenta: '#af7eb4'
+    cyan:    '#87b6b7'
+    white:   '#d9d9d9'
+
+  # Bright colors
+  bright:
+    black:   '#262626'
+    red:     '#d7b9b9'
+    green:   '#c3d9bf'
+    yellow:  '#dbdac0'
+    blue:    '#bdbed8'
+    magenta: '#d6bed9'
+    cyan:    '#c2dada'
+    white:   '#ffffff'
+
+background_opacity: 0.97
