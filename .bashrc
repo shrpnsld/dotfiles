@@ -1,7 +1,7 @@
 export BASH_SILENCE_DEPRECATION_WARNING=1
 export CLICOLOR=1
 
-PS1="\u@\w$ "
+PS1="\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ "
 #export W3MIMGDISPLAY_PATH='/Users/antondehtiar/Projects/w3m/w3mimgdisplay'
 
 #[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
