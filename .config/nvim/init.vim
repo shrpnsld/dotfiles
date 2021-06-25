@@ -176,8 +176,9 @@ filetype plugin on
 set path+=**
 set tags=./tags;
 set wildmenu
+set laststatus=2
 
-set clipboard+=unnamedplus
+set clipboard^=unnamed,unnamedplus
 
 set number
 set tabstop=4
@@ -201,6 +202,7 @@ set splitright
 call s:UpdateTrailingWhitespaceColor()
 colorscheme moody
 set guicursor=n-v-c-sm:block-blinkwait0-blinkon100-blinkoff100,i-ci-ve:ver25-blinkwait0-blinkon100-blinkoff100,r-cr-o:hor20
+set mouse=a
 
 
 "
