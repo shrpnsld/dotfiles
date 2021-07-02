@@ -247,4 +247,12 @@ let g:signify_update_on_focusgained=1
 " https://github.com/cocopon/iceberg.vim
 " https://github.com/tyrannicaltoucan/vim-deep-space
 " https://github.com/nightsense/carbonized
+" https://github.com/artanikin/vim-synthwave84
+" https://github.com/ghifarit53/tokyonight-vim
+" https://vimcolorschemes.com/rakr/vim-one
+" https://vimcolorschemes.com/joshdick/onedark.vim
+" https://vimcolorschemes.com/sainnhe/everforest
+" https://vimcolorschemes.com/cocopon/iceberg.vim
+" https://vimcolorschemes.com/ajmwagar/vim-deus
+" https://vimcolorschemes.com/sonph/onehalf
 
