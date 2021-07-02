@@ -199,6 +199,8 @@ set incsearch
 set splitbelow
 set splitright
 
+set ttimeoutlen=0
+
 call s:UpdateTrailingWhitespaceColor()
 colorscheme moody
 set guicursor=n-v-c-sm:block-blinkwait0-blinkon100-blinkoff100,i-ci-ve:ver25-blinkwait0-blinkon100-blinkoff100,r-cr-o:hor20
