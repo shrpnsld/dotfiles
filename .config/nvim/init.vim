@@ -218,7 +218,7 @@ let g:netrw_liststyle=3
 "
 " Coding and building
 
-set makeprg=cd\ $(find\ .\ -type\ f\ -name\ Makefile\ -printf\ '\\%h\\n'\ -quit);\ make
+set makeprg=~/.config/nvim/make-me
 
 
 "

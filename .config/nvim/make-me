@@ -1,0 +1,177 @@
+#!/bin/bash
+
+SCRIPT_NAME=$(basename $0)
+
+CACHE_FILE='.make-me'
+
+
+printf-stderr()
+{
+	printf "$@" >&2
+}
+
+
+printf-error()
+{
+	printf "$SCRIPT_NAME error: " >&2
+	printf "$@" >&2
+	printf '\n' >&2
+}
+
+
+ERROR_CACHE_NOT_ACCESSIBLE=1
+ERROR_PATH_IS_NOT_WRITABLE=2
+
+read-cache()
+{
+	local path=$1
+
+	if ! [ -f "$path" ] || ! [ -r "$path" ]
+	then
+		return $ERROR_CACHE_NOT_ACCESSIBLE
+	fi
+
+	cat "$path"
+}
+
+
+write-cache()
+{
+	local path=$1
+	local build_env=$2
+	local values=("${@:3}")
+
+	if ! [ -w "$PWD" ]
+	then
+		return $ERROR_PATH_IS_NOT_WRITABLE
+	fi
+
+	printf '%s\n' "$build_env" "${values[@]}" > "$path"
+}
+
+
+directory-from-path()
+{
+	local path=$1
+
+	printf '%s\n' "${path%/*}"
+}
+
+
+normalize-path()
+{
+	local path=$1
+
+	local last_component="${path##*/}"
+	path="$PWD/$path"
+	path="${path%/*}"
+	path="$(cd "$path"; pwd)"
+	path="./${path#$PWD/}"
+	printf '%s\n' "$path/$last_component"
+}
+
+
+ERROR_MAKEFILE_NOT_ACCESSIBLE=1
+ERROR_MULTIPLE_MAKEFILES=2
+
+detect-build-env()
+{
+	local first=$1
+
+	if [ $# -gt 0 ]
+	then
+		if [ "${first##*/}" == 'Makefile' ]
+		then
+			if ! [ -f "$first" ] || ! [ -r "$first" ]
+			then
+				printf '%s\n' "$first"
+				return $ERROR_MAKEFILE_NOT_ACCESSIBLE
+			fi
+
+			local path=$(normalize-path "$first")
+			local makefile_dir=$(directory-from-path "$path")
+			printf '%s\n' 'Make' "$makefile_dir"
+			return
+		else
+			local cpps=($(find . -type f -name '*.cpp'))
+			printf '%s\n' 'g++' "$@" "${cpps[@]}"
+			return
+		fi
+	fi
+
+	local makefile_paths=($(find . -type f -name Makefile))
+	if [ ${#makefile_paths[@]} -gt 1 ]
+	then
+		printf '%s\n' "${makefile_paths[@]}"
+		return $ERROR_MULTIPLE_MAKEFILES
+	fi
+
+	if [ ${#makefile_paths[@]} -eq 1 ]
+	then
+		local makefile_path="${makefile_paths[0]}"
+		if ! [ -r "$makefile_path" ]
+		then
+			printf '%s\n' "$makefile_path"
+			return $ERROR_MAKEFILE_NOT_ACCESSIBLE
+		fi
+
+		local makefile_dir=$(directory-from-path "$makefile_paths")
+		printf '%s\n' 'Make' "$makefile_dir"
+		return
+	fi
+
+	if [ ${#makefile_paths[@]} -eq 0 ]
+	then
+		local cpps=($(find . -type f -name '*.cpp'))
+		printf '%s\n' 'g++' "${cpps[@]}"
+		return
+	fi
+}
+
+
+if ! [ -r "$CACHE_FILE" ]
+then
+	output=($(detect-build-env "$@"))
+	case $? in
+		$ERROR_MAKEFILE_NOT_ACCESSIBLE)
+			printf-error '"%s" is not accessible' "${output[@]}"
+			exit 1
+			;;
+
+		$ERROR_MULTIPLE_MAKEFILES)
+			printf-error 'multiple Makefiles found. Please specify path to "make" command'
+			printf-stderr '  %s\n' "${output[@]}"
+			exit 1
+			;;
+	esac
+
+	write-cache "$CACHE_FILE" "${output[@]}"
+	if [ $? == $ERROR_PATH_IS_NOT_WRITABLE ]
+	then
+		printf-error '"%s" is not writable' "$PWD"
+		exit 1
+	fi
+fi
+
+
+cache=($(read-cache "$CACHE_FILE"))
+if [ $? == $ERROR_CACHE_NOT_ACCESSIBLE ]
+then
+	printf-error 'failed to read ".make-me" cache file'
+	exit 1
+fi
+
+build_env="${cache[0]}"
+case "$build_env" in
+	Make)
+		makefile_dir="${cache[1]}"
+		cd "$makefile_dir"
+		make
+		;;
+
+	g++)
+		arguments=("${cache[@]:1}")
+		g++ "${arguments[@]}"
+		;;
+esac
+
