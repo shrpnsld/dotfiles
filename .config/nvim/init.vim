@@ -229,6 +229,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'https://github.com/mhinz/vim-signify'
 call plug#end()
 
+let g:signify_update_on_bufenter=1
 let g:signify_update_on_focusgained=1
 
 
