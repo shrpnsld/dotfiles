@@ -1,0 +1,76 @@
+#!/bin/bash
+
+CACHE_PATH="${0%/*}/.battery-status-cache"
+CACHE_REFRESH_RATE=60 # in seconds
+
+# Requires 'Hack Nerd Font'
+#        charging_stages=('󰢟 ' '󰢜 ' '󰂆 ' '󰂇 ' '󰂈 ' '󰢝 ' '󰂉 ' '󰢞 ' '󰂊 ' '󰂋 ' '󰂅 ')
+#finishing_charge_stages=('󰢟 ' '󰢜 ' '󰂆 ' '󰂇 ' '󰂈 ' '󰢝 ' '󰂉 ' '󰢞 ' '󰂊 ' '󰂋 ' '󰂅 ')
+#         charged_stages=('󰂎' '󰁺' '󰁻' '󰁼' '󰁽' '󰁾' '󰁿' '󰂀' '󰂁' '󰂂' '󰁹')
+#     ac_attached_stages=('󰂎' '󰁺' '󰁻' '󰁼' '󰁽' '󰁾' '󰁿' '󰂀' '󰂁' '󰂂' '󰁹')
+#     discharging_stages=('󰂎'  '󰁺'  '󰁻'  '󰁼'  '󰁽'  '󰁾'  '󰁿'  '󰂀'  '󰂁'  '󰂂'  '󰁹')
+        charging_stages=(' 󱐋' ' 󱐋' ' 󱐋' ' 󱐋' ' 󱐋')
+finishing_charge_stages=(' 󱐋' ' 󱐋' ' 󱐋' ' 󱐋' ' 󱐋')
+         charged_stages=(' '  ' '  ' '  ' '  ' ')
+     ac_attached_stages=(' '  ' '  ' '  ' '  ' ')
+     discharging_stages=(' '   ' '   ' '   ' '   ' ')
+
+function cache-battery-status()
+{
+	local output=$(pmset -g batt)
+	local percentage=$(grep --only-matching '[0-9]\{1,3\}%' <<< "$output")
+	percentage="${percentage%\%}"
+	local state=$(grep --only-matching 'charging\|discharging\|charged\|AC attached' <<< "$output")
+	printf '%s|%s' "$percentage" "$state" > "$CACHE_PATH"
+}
+
+last_modified=$(date -r "$CACHE_PATH" +%s)
+if [ $? != 0 ] && ! [ -r "$CACHE_PATH" ]
+then
+	cache-battery-status
+fi
+
+now=$(date +%s)
+passed=$(( now - last_modified ))
+if [[ $passed -ge $CACHE_REFRESH_RATE ]]
+then
+	cache-battery-status
+fi
+
+battery_state=$(cat "$CACHE_PATH")
+percentage="${battery_state%|*}"
+state="${battery_state#*|}"
+
+case $state in
+	'charging')
+		stages=("${charging_stages[@]}")
+		;;
+
+	'charged')
+		stages=("${charged_stages[@]}")
+		;;
+
+	'finishing charge')
+		stages=("${finishing_charge_stages[@]}")
+		;;
+
+	'discharging')
+		stages=("${discharging_stages[@]}")
+		;;
+
+	'AC attached')
+		stages=("${ac_attached_stages[@]}")
+		;;
+
+	*)
+		stages=("${discharging_stages[@]}")
+		;;
+esac
+
+stage_count=$(( ${#stages[@]} - 1 ))
+stage_size=$(( 100 / stage_count ))
+stage_number=$(( percentage / stage_size ))
+stage="${stages[$stage_number]}"
+
+printf '%s%% %s' "$percentage" "$stage"
+

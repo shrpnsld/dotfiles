@@ -1,0 +1,29 @@
+#!/bin/bash
+
+current_command=${1#-}
+current_path=$2
+window_name=$3
+
+current_shell=${SHELL##*/}
+
+if [ -n "$window_name" ]
+then
+	printf '%s' "$window_name"
+	exit
+fi
+
+if [[ $current_command != $current_shell ]]
+then
+	printf '%s' "$current_command"
+	exit
+fi
+
+relative_path="${current_path#$HOME}"
+if [[ $relative_path == $current_path ]]
+then
+	printf '󰆍 %s' "$current_path"
+	exit
+fi
+
+printf '󰆍 ~%s/' "$relative_path"
+
