@@ -17,6 +17,22 @@ function! s:GetHighlightValue(name, mode, component, reverse_component, default)
 	return value
 endfunction
 
+function! s:MoveTabLeft()
+	if tabpagenr() > 1
+		tabm -1
+	else
+		execute 'tabm '..tabpagenr('$')
+	endif
+endfunction
+
+function! s:MoveTabRight()
+	if tabpagenr() < tabpagenr('$')
+		tabm +1
+	else
+		tabm 0
+	endif
+endfunction
+
 "
 " Color scheme corrections
 
@@ -272,10 +288,10 @@ set makeprg=make-me
 "
 " Bindings
 
-noremap <Tab> gt
-noremap <S-Tab> gT
-noremap <leader><Tab> :tabm +1<CR>
-noremap <leader><S-Tab> :tabm -1<CR>
+noremap <silent> <Tab> gt
+noremap <silent> <S-Tab> gT
+noremap <silent> <Leader><Tab> :call <SID>MoveTabRight()<CR>
+noremap <silent> <Leader><S-Tab> :call <SID>MoveTabLeft()<CR>
 
 "
 " Plugins
