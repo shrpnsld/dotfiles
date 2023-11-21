@@ -84,6 +84,7 @@ let s:ICON_DIRECTORY = nr2char(0xf0770)
 let s:ICON_PLUGIN = nr2char(0xf40e)
 let s:ICON_TERMINAL = nr2char(0xf489)
 let STATUSLINE_DELIMITER = nr2char(0xe216)
+let ICON_QUICK_FIX = nr2char(0xf05b7)
 
 function! s:RemoveTrailingShash(path)
 	if a:path[strlen(a:path)-1] ==# '/'
@@ -230,6 +231,8 @@ set statusline+=%#Number#%L%#Normal#
 set statusline+=\ 
 set statusline+=━━
 
+autocmd FileType qf setlocal statusline=%=\ %#String#%{ICON_QUICK_FIX}\ [Quickfix\ List]%#Normal#\ ━━
+
 "
 " Standard settings
 
@@ -292,6 +295,10 @@ noremap <silent> <Tab> gt
 noremap <silent> <S-Tab> gT
 noremap <silent> <Leader><Tab> :call <SID>MoveTabRight()<CR>
 noremap <silent> <Leader><S-Tab> :call <SID>MoveTabLeft()<CR>
+
+noremap <silent> <Leader>a :make<CR>
+noremap <silent> <Leader>q :copen<CR>
+noremap <silent> <Leader>w :cclose<CR>
 
 "
 " Plugins
