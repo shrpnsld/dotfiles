@@ -65,6 +65,7 @@ function! s:CorrectTabLineFillHighlights()
 endfunction
 
 augroup ColorSchemeCorrections
+	autocmd!
 	autocmd ColorScheme * call s:CorrectMatchParenHighlights()
 	autocmd ColorScheme * call s:CorrectWindowHighlights()
 	autocmd ColorScheme * call s:CorrectStatusLineHighlights()
@@ -86,16 +87,9 @@ let s:ICON_TERMINAL = nr2char(0xf489)
 let STATUSLINE_DELIMITER = nr2char(0xe216)
 let ICON_QUICK_FIX = nr2char(0xf05b7)
 
-function! s:RemoveTrailingShash(path)
-	if a:path[strlen(a:path)-1] ==# '/'
-		return a:path[0:-2]
-	else
-		return a:path
-	endif
-endfunction
 
 function! s:HomeRelativeOrAbsoluteDirPath(path)
-	let path = fnamemodify(a:path, ":~")
+	let path = fnamemodify(a:path, ':~')
 	if path ==# '/'
 		return path
 	endif
@@ -104,22 +98,22 @@ function! s:HomeRelativeOrAbsoluteDirPath(path)
 endfunction
 
 function! s:BufferIcon(buffer_number)
-	let is_readonly = getbufvar(a:buffer_number, "&readonly")
-	let is_modified = getbufvar(a:buffer_number, "&modified")
-
-	let buftype = getbufvar(a:buffer_number, "&buftype")
+	let buftype = getbufvar(a:buffer_number, '&buftype')
 	if buftype ==# 'help'
 		return s:ICON_HELP
 	elsseif buftype ==# 'terminal'
 		return s:ICON_TERMINAL
 	endif
 
-	let file_type = getbufvar(a:buffer_number, "&filetype")
+	let file_type = getbufvar(a:buffer_number, '&filetype')
 	if file_type ==# 'netrw'
 		return s:ICON_DIRECTORY
 	elseif file_type ==# 'vim-plug'
 		return s:ICON_PLUGIN
 	endif
+
+	let is_readonly = getbufvar(a:buffer_number, '&readonly')
+	let is_modified = getbufvar(a:buffer_number, '&modified')
 
 	if is_readonly
 		if is_modified
@@ -147,7 +141,7 @@ function! s:TabLabel(tab_number)
 	if buffer_name ==# ''
 		let label = '[No Name]'
 	else
-		let label = fnamemodify(buffer_name, ":t")
+		let label = fnamemodify(buffer_name, ':t')
 	endif
 
 	return icon..' '..label
@@ -159,9 +153,9 @@ function! TabLine()
 
 	for index in range(1, tabpagenr('$'))
 		if index == tabpagenr()
-			let tab_color = "%#TabLineSel#"
+			let tab_color = '%#TabLineSel#'
 		else
-			let tab_color = "%#TabLine#"
+			let tab_color = '%#TabLine#'
 		endif
 
 		let label = s:TabLabel(index)
@@ -213,6 +207,7 @@ endfunction
 set showtabline=2
 set tabline=%!TabLine()
 
+set fillchars=
 set fillchars+=stl:━,stlnc:━,vert:┃,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,verthoriz:╋,wbr:═,msgsep:═
 
 set statusline=
@@ -242,7 +237,6 @@ syntax enable
 filetype plugin on
 
 set path+=**
-set tags=./tags;
 set wildmenu
 set laststatus=2
 set showcmd
@@ -283,6 +277,10 @@ let g:netrw_altv=1
 let g:netrw_liststyle=3
 let g:netrw_sort_options='i'
 
+" preview on the right
+let g:netrw_preview=1
+let g:netrw_alto=0
+
 "
 " Coding and building
 
@@ -299,6 +297,8 @@ noremap <silent> <Leader><S-Tab> :call <SID>MoveTabLeft()<CR>
 noremap <silent> <Leader>a :make<CR>
 noremap <silent> <Leader>q :copen<CR>
 noremap <silent> <Leader>w :cclose<CR>
+
+noremap <silent> <Leader>p :pclose<CR>
 
 "
 " Plugins
@@ -339,7 +339,7 @@ let g:signify_sign_delete_first_line = '┃'
 let g:signify_sign_change            = '┃'
 let g:signify_sign_change_delete     = '┃'
 
-augroup AuGroupRefreshSignify
+augroup RefreshSignify
 	autocmd!
 	autocmd TextChanged * call sy#start()
 	autocmd InsertLeave * call sy#start()
