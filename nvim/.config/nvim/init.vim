@@ -314,26 +314,31 @@ noremap <silent> <Leader>p :pclose<CR>
 " Plugins
 
 call plug#begin('~/.local/share/nvim/plugged')
-" utility
-Plug 'mhinz/vim-signify'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'shrpnsld/trailing-shade.vim'
-Plug 'shrpnsld/ocd-save.vim'
+" Utility
+	Plug 'mhinz/vim-signify'
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+	Plug 'shrpnsld/trailing-shade.vim'
+	Plug 'shrpnsld/ocd-save.vim'
 
-" color schemes 'termguicolors'
-Plug 'catppuccin/nvim', { 'as': 'catppuccin', 'branch': 'main' }
-Plug 'rebelot/kanagawa.nvim'
-Plug 'ghifarit53/tokyonight-vim'
-Plug 'tiagovla/tokyodark.nvim'
-Plug 'folke/tokyonight.nvim'
-Plug 'shrikecode/kyotonight.vim'
-Plug 'franbach/miramare'
+" Color schemes
+	" 'termguicolors'
+	Plug 'catppuccin/nvim', { 'as': 'catppuccin', 'branch': 'main' }
+	Plug 'rebelot/kanagawa.nvim'
+	Plug 'ghifarit53/tokyonight-vim'
+	Plug 'tiagovla/tokyodark.nvim'
+	Plug 'folke/tokyonight.nvim'
+	Plug 'shrikecode/kyotonight.vim'
+	Plug 'franbach/miramare'
 
-" color schemes 'notermguicolors'
-Plug 'dracula/vim', { 'as': 'dracula' }
+	" giving a try
+	Plug 'EdenEast/nightfox.nvim' " duskfox flavor
+	Plug 'bluz71/vim-moonfly-colors'
 
-" archive
-"Plug 'godlygeek/csapprox'
+	" color schemes 'notermguicolors'
+	Plug 'dracula/vim', { 'as': 'dracula' }
+
+" Archive
+	"Plug 'godlygeek/csapprox'
 call plug#end()
 
 " catppuccin
