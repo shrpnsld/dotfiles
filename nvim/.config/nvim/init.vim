@@ -89,9 +89,11 @@ let s:ICON_HELP = nr2char(0xf02d6)
 let s:ICON_DIRECTORY = nr2char(0xf0770)
 let s:ICON_PLUGIN = nr2char(0xf40e)
 let s:ICON_TERMINAL = nr2char(0xf489)
-let STATUSLINE_DELIMITER = nr2char(0xe216)
-let ICON_QUICK_FIX = nr2char(0xf05b7)
+let s:ICON_PREVIEW = nr2char(0xeb28)
 
+let STATUSLINE_ICON_QUICK_FIX = nr2char(0xf05b7)
+let STATUSLINE_DELIMITER = nr2char(0xe216)
+let STATUSLINE_END = '  '
 
 function! s:HomeRelativeOrAbsoluteDirPath(path)
 	let path = fnamemodify(a:path, ':~')
@@ -216,9 +218,7 @@ set fillchars=
 set fillchars+=stl:━,stlnc:━,vert:┃,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,verthoriz:╋,wbr:═,msgsep:═
 
 set statusline=
-set statusline+=%#Normal#%q%w
-set statusline+=%=
-set statusline+=\ 
+set statusline+=%#Normal#%=\ 
 set statusline+=%#String#%{%CurrentBufferIcon()%}\ %{%CurrentBufferName()%}%#Normal#
 set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
 set statusline+=%#Function#%{FileType()}%#Normal#
@@ -228,10 +228,14 @@ set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\
 set statusline+=%#Keyword#%{&fileformat}%#Normal#
 set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
 set statusline+=%#Number#%L%#Normal#
-set statusline+=\ 
-set statusline+=━━
+set statusline+=\ %{STATUSLINE_END}
+set statusline+=%w
 
-autocmd FileType qf setlocal statusline=%=\ %#String#%{ICON_QUICK_FIX}\ [Quickfix\ List]%#Normal#\ ━━
+augroup StatusLineCustomization
+	autocmd!
+	autocmd FileType qf setlocal statusline=%=\ %#String#%{STATUSLINE_ICON_QUICK_FIX}\ [Quickfix\ List]%#Normal#\ ━━
+	autocmd FileType netrw setlocal statusline=%=\ %#String#%{%CurrentBufferIcon()%}\ netrw%#Normal#\ ━━
+augroup END
 
 "
 " Standard settings
