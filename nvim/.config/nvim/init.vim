@@ -36,6 +36,10 @@ endfunction
 "
 " Color scheme corrections
 
+function! s:CorrectCursorLine()
+	highlight! clear CursorLine
+endfunction
+
 function! s:CorrectMatchParenHighlights()
 	highlight! MatchParen cterm=none,bold,underline ctermfg=none ctermbg=none gui=none,bold,underline guifg=none guibg=none
 endfunction
@@ -66,6 +70,7 @@ endfunction
 
 augroup ColorSchemeCorrections
 	autocmd!
+	autocmd ColorScheme * call s:CorrectCursorLine()
 	autocmd ColorScheme * call s:CorrectMatchParenHighlights()
 	autocmd ColorScheme * call s:CorrectWindowHighlights()
 	autocmd ColorScheme * call s:CorrectStatusLineHighlights()
@@ -245,6 +250,7 @@ set showcmdloc=last
 set clipboard^=unnamed,unnamedplus
 
 set number
+set cursorline
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
