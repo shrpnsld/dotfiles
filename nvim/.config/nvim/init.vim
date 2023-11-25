@@ -309,11 +309,15 @@ noremap <silent> <S-Tab> gT
 noremap <silent> <Leader><Tab> :call <SID>MoveTabRight()<CR>
 noremap <silent> <Leader><S-Tab> :call <SID>MoveTabLeft()<CR>
 
-noremap <silent> <Leader>a :make<CR>
-noremap <silent> <Leader>q :copen<CR>
-noremap <silent> <Leader>w :cclose<CR>
-
-noremap <silent> <Leader>p :pclose<CR>
+noremap <silent> <Leader>a :make!<CR>
+noremap <silent> <Leader>f :copen 20<CR>
+noremap <silent> <Leader>F :cclose<CR>
+noremap <silent> <Leader>P :pclose<CR>
+noremap <silent> <Leader>w :bwipeout<CR>
+noremap <silent> <Leader>t :Texplore<CR>
+noremap <silent> <Leader>e :Explore<CR>
+noremap <silent> <Leader>q :quit<CR>
+noremap <silent> <Leader>/ :nohlsearch<CR>
 
 "
 " Plugins
