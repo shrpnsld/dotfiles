@@ -145,7 +145,12 @@ function! s:TabLabel(tab_number)
 
 	let icon = s:BufferIcon(buffer_number)
 
-	if buffer_name ==# ''
+	let file_type = getbufvar(buffer_number, '&filetype')
+
+	if file_type ==# 'netrw'
+		let netrw_curent_dir = expand(getbufvar(buffer_number, 'netrw_curdir'))
+		let label = fnamemodify(netrw_curent_dir, ':t')..'/'
+	elseif buffer_name ==# ''
 		let label = '[No Name]'
 	else
 		let label = fnamemodify(buffer_name, ':t')
