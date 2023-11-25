@@ -223,7 +223,7 @@ set fillchars=
 set fillchars+=stl:━,stlnc:━,vert:┃,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,verthoriz:╋,wbr:═,msgsep:═
 
 set statusline=
-set statusline+=%#Normal#%=\ 
+set statusline+=%#Normal#%=%w\ 
 set statusline+=%#String#%{%CurrentBufferIcon()%}\ %{%CurrentBufferName()%}%#Normal#
 set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
 set statusline+=%#Function#%{FileType()}%#Normal#
@@ -234,7 +234,6 @@ set statusline+=%#Keyword#%{&fileformat}%#Normal#
 set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
 set statusline+=%#Number#%L%#Normal#
 set statusline+=\ %{STATUSLINE_END}
-set statusline+=%w
 
 augroup StatusLineCustomization
 	autocmd!
@@ -287,14 +286,15 @@ set mouse=a
 "
 " File manager
 
-let g:netrw_banner=0
-let g:netrw_altv=1
-let g:netrw_liststyle=3
-let g:netrw_sort_options='i'
+let g:netrw_banner = 0
+let g:netrw_altv = 1
+let g:netrw_liststyle = 3
+let g:netrw_sort_options = 'i'
+let g:netrw_keepdir = 1
 
 " preview on the right
-let g:netrw_preview=1
-let g:netrw_alto=0
+let g:netrw_preview = 1
+let g:netrw_alto = 0
 
 "
 " Coding and building
@@ -351,8 +351,8 @@ set background=dark
 colorscheme catppuccin-mocha
 
 " signify
-let g:signify_update_on_bufenter=1
-let g:signify_update_on_focusgained=1
+let g:signify_update_on_bufenter = 1
+let g:signify_update_on_focusgained = 1
 let g:signify_sign_add               = '┃'
 let g:signify_sign_delete            = '┃'
 let g:signify_sign_delete_first_line = '┃'
