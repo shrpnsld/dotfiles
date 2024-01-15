@@ -34,7 +34,7 @@ function! s:MoveTabRight()
 endfunction
 
 "
-" Color scheme corrections
+" Color scheme additions and corrections
 
 function! s:CorrectCursorLine()
 	highlight! clear CursorLine
@@ -56,16 +56,48 @@ function! s:CorrectStatusLineHighlights()
 	highlight! StatusLineNC ctermfg=none ctermbg=none guifg=none guibg=none cterm=none
 endfunction
 
-function! s:AddStatusDelimiterHighlights()
+function! s:AddStatusLineHighlights()
 	let cterm_fg = s:GetHighlightValue('Normal', 'cterm', 'fg', 'bg', 'none')
 	let gui_fg = s:GetHighlightValue('Normal', 'gui', 'fg', 'bg', 'none')
-	execute 'highlight! StatusLineDelimiter ctermfg='..cterm_fg..' ctermbg=none cterm=bold guifg='..gui_fg..' guibg=none gui=bold'
+	execute 'highlight! StatusLineDelimiter ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
+
+	let cterm_fg = s:GetHighlightValue('String', 'cterm', 'fg', 'bg', 'none')
+	let gui_fg = s:GetHighlightValue('String', 'gui', 'fg', 'bg', 'none')
+	let cterm_bg = s:GetHighlightValue('Normal', 'cterm', 'bg', 'fg', 'none')
+	let gui_bg = s:GetHighlightValue('Normal', 'gui', 'bg', 'fg', 'none')
+	execute 'highlight! StatusLineSpecialText ctermfg='..cterm_bg..' ctermbg='..cterm_fg..' cterm=bold guifg='..gui_bg..' guibg='..gui_fg..' gui=bold'
+	execute 'highlight! StatusLineSpecialSide ctermfg='..cterm_fg..' ctermbg='..cterm_bg..' cterm=bold guifg='..gui_fg..' guibg='..gui_bg..' gui=none'
+
+	let cterm_fg = s:GetHighlightValue('String', 'cterm', 'fg', 'bg', 'none')
+	let gui_fg = s:GetHighlightValue('String', 'gui', 'fg', 'bg', 'none')
+	execute 'highlight! StatusLineBufferName ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
+
+	let cterm_fg = s:GetHighlightValue('Function', 'cterm', 'fg', 'bg', 'none')
+	let gui_fg = s:GetHighlightValue('Function', 'gui', 'fg', 'bg', 'none')
+
+	execute 'highlight! StatusLineFileType ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
+
+	let cterm_fg = s:GetHighlightValue('Keyword', 'cterm', 'fg', 'bg', 'none')
+	let gui_fg = s:GetHighlightValue('Keyword', 'gui', 'fg', 'bg', 'none')
+
+	execute 'highlight! StatusLineEncoding ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
+	execute 'highlight! StatusLineLEFormat ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
+
+	let cterm_fg = s:GetHighlightValue('Number', 'cterm', 'fg', 'bg', 'none')
+	let gui_fg = s:GetHighlightValue('Number', 'gui', 'fg', 'bg', 'none')
+
+	execute 'highlight! StatusLineLineCount ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
 endfunction
 
 function! s:CorrectTabLineFillHighlights()
 	let cterm_fg = s:GetHighlightValue('Normal', 'cterm', 'fg', 'bg', 'none')
+	let cterm_bg = s:GetHighlightValue('Normal', 'cterm', 'bg', 'fg', 'none')
 	let gui_fg = s:GetHighlightValue('Normal', 'gui', 'fg', 'bg', 'none')
-	execute 'highlight! TabLineFill ctermfg='..cterm_fg..' ctermbg=none cterm=bold guifg='..gui_fg..' guibg=none gui=bold'
+	let gui_bg = s:GetHighlightValue('Normal', 'gui', 'bg', 'fg', 'none')
+
+	execute 'highlight! TabLineFill ctermfg='..cterm_fg..' ctermbg=none cterm=none guifg='..gui_fg..' guibg=none gui=none'
+	execute 'highlight! TabLine ctermfg='..cterm_fg..' ctermbg='..cterm_bg..' cterm=none guifg='..gui_fg..' guibg='..gui_bg..' gui=none'
+	execute 'highlight! TabLineSel ctermfg='..cterm_bg..' ctermbg='..cterm_fg..' cterm=bold guifg='..gui_bg..' guibg='..gui_fg..' gui=bold'
 endfunction
 
 augroup ColorSchemeCorrections
@@ -75,7 +107,7 @@ augroup ColorSchemeCorrections
 	autocmd ColorScheme * call s:CorrectWindowHighlights()
 	autocmd ColorScheme * call s:CorrectStatusLineHighlights()
 	autocmd ColorScheme * call s:CorrectTabLineFillHighlights()
-	autocmd ColorScheme * call s:AddStatusDelimiterHighlights()
+	autocmd ColorScheme * call s:AddStatusLineHighlights()
 augroup END
 
 "
@@ -89,33 +121,71 @@ let s:ICON_HELP = nr2char(0xf02d6)
 let s:ICON_DIRECTORY = nr2char(0xf0770)
 let s:ICON_PLUGIN = nr2char(0xf40e)
 let s:ICON_TERMINAL = nr2char(0xf489)
-let s:ICON_PREVIEW = nr2char(0xeb28)
+let s:ICON_PREVIEW = nr2char(0xf0c7d)
+let s:ICON_QUICKFIX = nr2char(0xf05b7)
 
-let STATUSLINE_ICON_QUICK_FIX = nr2char(0xf05b7)
-let STATUSLINE_DELIMITER = nr2char(0xe216)
-let STATUSLINE_END = '  '
+let s:LINE_START = '%#StatusLine#╺'
+let s:LINE_END = '╸'
+
+" Rectangle
+"let s:LEFT_BUMP = ''
+"let s:RIGHT_BUMP = ''
+
+" Pill
+let s:LEFT_BUMP = nr2char(0xe0b6)
+let s:RIGHT_BUMP = nr2char(0xe0b4)
+
+" Skewed
+"let s:LEFT_BUMP = nr2char(0xe0ba)
+"let s:RIGHT_BUMP = nr2char(0xe0bc)
+
+" Hexagon
+"let s:LEFT_BUMP = nr2char(0xe0b2)
+"let s:RIGHT_BUMP = nr2char(0xe0b0)
+
+" Hexagon 2
+"let s:LEFT_BUMP = nr2char(0xf053)..nr2char(0xe0b2)
+"let s:RIGHT_BUMP = nr2char(0xe0b0)..nr2char(0xf054)
+
+" Hexagon 3
+"let s:LEFT_BUMP = nr2char(0xe0b3)..nr2char(0xe0b2)
+"let s:RIGHT_BUMP = nr2char(0xe0b0)..nr2char(0xe0b1)
+
+let s:STATUSLINE_SPECIAL_LEFT_SIDE = '%#StatusLineSpecialSide#'..s:LEFT_BUMP..'%#StatusLineSpecialText# '
+let s:STATUSLINE_SPECIAL_RIGHT_SIDE = ' %#StatusLineSpecialSide#'..s:RIGHT_BUMP..'%#StatusLine#'
+let s:STATUSLINE_DELIMITER = '%#StatusLineDelimiter# '..nr2char(0xe216)..' %#StatusLine#'
+let s:STATUSLINE_END = s:LINE_START..'%{" "}'
 
 function! s:HomeRelativeOrAbsoluteDirPath(path)
 	let path = fnamemodify(a:path, ':~')
-	if path ==# '/'
+	return path ==# '/' ? path : path..'/'
+endfunction
+
+function! s:RelativeOrAbsoluteDirPath(path, root)
+	if stridx(a:path, a:root) != 0
+		return s:HomeRelativeOrAbsoluteDirPath(a:path)
+	endif
+
+	let path = './'..a:path[strlen(a:root) + 1:strlen(a:path) - 1]
+	if path ==# './'
 		return path
 	endif
 
 	return path..'/'
 endfunction
 
-function! s:BufferIcon(buffer_number)
-	let buftype = getbufvar(a:buffer_number, '&buftype')
-	if buftype ==# 'help'
+function! s:BufferIcon(buffer_number, buffer_type, file_type)
+	if a:buffer_type ==# 'help'
 		return s:ICON_HELP
-	elsseif buftype ==# 'terminal'
+	elseif a:buffer_type ==# 'terminal'
 		return s:ICON_TERMINAL
+	elseif a:buffer_type ==# 'quickfix'
+		return s:ICON_QUICKFIX
 	endif
 
-	let file_type = getbufvar(a:buffer_number, '&filetype')
-	if file_type ==# 'netrw'
+	if a:file_type ==# 'netrw'
 		return s:ICON_DIRECTORY
-	elseif file_type ==# 'vim-plug'
+	elseif a:file_type ==# 'vim-plug'
 		return s:ICON_PLUGIN
 	endif
 
@@ -142,14 +212,16 @@ function! s:TabLabel(tab_number)
 	let window_number = tabpagewinnr(a:tab_number)
 	let buffer_number = buffer_list[window_number - 1]
 	let buffer_name = bufname(buffer_number)
-
-	let icon = s:BufferIcon(buffer_number)
-
+	let buffer_type = getbufvar(buffer_number, '&buftype')
 	let file_type = getbufvar(buffer_number, '&filetype')
 
+	let icon = s:BufferIcon(buffer_number, buffer_type, file_type)
+
 	if file_type ==# 'netrw'
-		let netrw_curent_dir = expand(getbufvar(buffer_number, 'netrw_curdir'))
-		let label = fnamemodify(netrw_curent_dir, ':t')..'/'
+		let netrw_current_dir = expand(getbufvar(buffer_number, 'netrw_curdir'))
+		let label = fnamemodify(netrw_current_dir, ':t')..'/'
+	elseif buffer_type ==# 'quickfix'
+		let label = 'Quickfix List'
 	elseif buffer_name ==# ''
 		let label = '[No Name]'
 	else
@@ -160,7 +232,7 @@ function! s:TabLabel(tab_number)
 endfunction
 
 function! TabLine()
-	let tab_line = '%#TabLineFill#━━ '
+	let tab_line = '%#TabLineFill#━'..s:LINE_END
 	let printable_length = 0
 
 	for index in range(1, tabpagenr('$'))
@@ -176,14 +248,17 @@ function! TabLine()
 	endfor
 
 	let cwd = s:HomeRelativeOrAbsoluteDirPath(getcwd())
-	let liiine = repeat('━', &g:columns - 3 - printable_length - 4 - strlen(cwd) - 3)
-	let tab_line ..= '%#TabLineFill# '..liiine..'%= '..s:ICON_DIRECTORY..' '..cwd..' ━━'
+	let liiine = repeat('━', &g:columns - 2 - printable_length - 4 - strlen(cwd) - 2)
+	let tab_line ..= '%#TabLineFill#╺'..liiine..'%='..s:LINE_END..s:ICON_DIRECTORY..' '..cwd..'╺━'
 
 	return tab_line
 endfunction
 
 function! CurrentBufferIcon()
-	return s:BufferIcon(bufnr())
+	let buffer_number = bufnr()
+	let buffer_type = getbufvar(buffer_number, '&buftype')
+	let file_type = getbufvar(buffer_number, '&filetype')
+	return s:BufferIcon(buffer_number, buffer_type, file_type)
 endfunction
 
 function! CurrentBufferName()
@@ -195,6 +270,8 @@ function! CurrentBufferName()
 	if buffer_name ==# ''
 		return '%F'
 	endif
+
+	let buffer_name = substitute(buffer_name, ' ', "\u00a0", 'g')
 
 	if buffer_name[0] ==# '/'
 		let buffer_name = fnamemodify(buffer_name, ':~')
@@ -208,12 +285,54 @@ function! CurrentBufferName()
 	return buffer_name
 endfunction
 
-function! FileType()
+function! s:FileType()
 	if &filetype ==# ''
 		return nr2char(183)..nr2char(183)..nr2char(183)
+	else
+		return &filetype
+	endif
+endfunction
+
+function! StatusLine()
+	if &filetype ==# 'netrw'
+		let netrw_current_dir = expand(getbufvar(bufnr(), 'netrw_curdir'))
+		let path = s:RelativeOrAbsoluteDirPath(netrw_current_dir, getcwd())
+		return '%='..s:LINE_END..s:STATUSLINE_SPECIAL_LEFT_SIDE..CurrentBufferIcon()..' netrw'..s:STATUSLINE_SPECIAL_RIGHT_SIDE..' %#StatusLineBufferName#'..path..s:STATUSLINE_END
 	endif
 
-	return &filetype
+	if &buftype ==# ''
+		return
+			\ '%#StatusLine#%='..s:LINE_END
+			\ ..(&previewwindow?s:STATUSLINE_SPECIAL_LEFT_SIDE..s:ICON_PREVIEW..' Preview'..s:STATUSLINE_SPECIAL_RIGHT_SIDE..' ':'')
+			\ ..'%#StatusLineBufferName#'..CurrentBufferIcon()..' '..CurrentBufferName()
+			\ ..s:STATUSLINE_DELIMITER..'%#StatusLineFileType#'..s:FileType()
+			\ ..s:STATUSLINE_DELIMITER..'%#StatusLineEncoding#'..(&fileencoding?&fileencoding:&encoding)
+			\ ..s:STATUSLINE_DELIMITER..'%#StatusLineLEFormat#'..&fileformat
+			\ ..s:STATUSLINE_DELIMITER..'%#StatusLineLineCount#'..nr2char(0xf0bc3)..' %L'
+			\ ..s:STATUSLINE_END
+	endif
+
+	if &buftype ==# 'nofile'
+		if &filetype ==# 'vim-plug'
+			return '%='..s:LINE_END..s:STATUSLINE_SPECIAL_LEFT_SIDE..s:ICON_PLUGIN..' vim-plug'..s:STATUSLINE_SPECIAL_RIGHT_SIDE..s:STATUSLINE_END
+		endif
+
+		"and other plugins, I guess...
+	endif
+
+	if &buftype ==# 'help'
+		return '%='..s:LINE_END..s:STATUSLINE_SPECIAL_LEFT_SIDE..s:ICON_HELP..' Help'..s:STATUSLINE_SPECIAL_RIGHT_SIDE..' %#StatusLineBufferName#'..fnamemodify(bufname(), ':t')..s:STATUSLINE_END
+	endif
+
+	if &buftype ==# 'terminal'
+		return '%='..s:LINE_END..s:STATUSLINE_SPECIAL_LEFT_SIDE..s:ICON_TERMINAL..' Terminal'..s:STATUSLINE_SPECIAL_RIGHT_SIDE..' %#StatusLineBufferName#%F'..s:STATUSLINE_END
+	endif
+
+	return '%='..s:LINE_END..'%#StatusLineBufferName#%F'..s:STATUSLINE_END
+endfunction
+
+function! QuickFixStatusLine()
+	return '%='..s:LINE_END..s:STATUSLINE_SPECIAL_LEFT_SIDE..s:ICON_QUICKFIX..' Quickfix List'..s:STATUSLINE_SPECIAL_RIGHT_SIDE..s:STATUSLINE_END
 endfunction
 
 set showtabline=2
@@ -222,23 +341,13 @@ set tabline=%!TabLine()
 set fillchars=
 set fillchars+=stl:━,stlnc:━,vert:┃,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,verthoriz:╋,wbr:═,msgsep:═
 
-set statusline=
-set statusline+=%#Normal#%=%w\ 
-set statusline+=%#String#%{%CurrentBufferIcon()%}\ %{%CurrentBufferName()%}%#Normal#
-set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
-set statusline+=%#Function#%{FileType()}%#Normal#
-set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
-set statusline+=%#Keyword#%{&fileencoding?&fileencoding:&encoding}%#Normal#
-set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
-set statusline+=%#Keyword#%{&fileformat}%#Normal#
-set statusline+=\ %#StatusLineDelimiter#%{STATUSLINE_DELIMITER}%#Normal#\ 
-set statusline+=%#Number#%L%#Normal#
-set statusline+=\ %{STATUSLINE_END}
+set statusline=%{%StatusLine()%}
 
 augroup StatusLineCustomization
 	autocmd!
-	autocmd FileType qf setlocal statusline=%=\ %#String#%{STATUSLINE_ICON_QUICK_FIX}\ [Quickfix\ List]%#Normal#\ ━━
-	autocmd FileType netrw setlocal statusline=%=\ %#String#%{%CurrentBufferIcon()%}\ netrw%#Normal#\ ━━
+
+	"NOTE: setting 'statusline' for 'Quickfix List' is not working inside 'StatusLine()' function. but it works this way
+	autocmd FileType qf setlocal statusline=%{%QuickFixStatusLine()%}
 augroup END
 
 "
