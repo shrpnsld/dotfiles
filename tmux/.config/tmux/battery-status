@@ -20,7 +20,8 @@ function cache-battery-status()
 	local output=$(pmset -g batt)
 	local percentage=$(grep --only-matching '[0-9]\{1,3\}%' <<< "$output")
 	percentage="${percentage%\%}"
-	local state=$(grep --only-matching 'charging\|discharging\|charged\|AC attached' <<< "$output")
+	local state=$(grep --only-matching '\(charging\|discharging\|charged\|AC attached\);' <<< "$output")
+	state=${state%;}
 	printf '%s|%s' "$percentage" "$state" > "$CACHE_PATH"
 }
 
