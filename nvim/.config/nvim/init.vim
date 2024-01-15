@@ -378,7 +378,6 @@ set wrap
 set scrolloff=5
 set backspace=indent,eol,start
 set matchpairs+=<:>
-set noswapfile
 
 set ignorecase
 set smartcase
@@ -477,6 +476,9 @@ augroup RefreshSignify
 	autocmd TextChanged * call sy#start()
 	autocmd InsertLeave * call sy#start()
 augroup END
+
+" ocd-save
+set noswapfile
 
 " treesitter
 lua <<EOF
