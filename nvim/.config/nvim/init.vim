@@ -447,11 +447,21 @@ call plug#begin('~/.local/share/nvim/plugged')
 	Plug 'franbach/miramare'
 
 	" giving a try
+	Plug 'rose-pine/neovim'
 	Plug 'EdenEast/nightfox.nvim' " duskfox flavor
+	Plug 'cryptomilk/nightcity.nvim' " afterlife flavor
 	Plug 'bluz71/vim-moonfly-colors'
+	Plug 'miikanissi/modus-themes.nvim'
+	Plug 'zootedb0t/citruszest.nvim'
+	Plug 'nyngwang/nvimgelion'
+	Plug 'olimorris/onedarkpro.nvim'
 
 	" color schemes 'notermguicolors'
 	Plug 'dracula/vim', { 'as': 'dracula' }
+	Plug 'rakr/vim-one'
+	Plug 'nanotech/jellybeans.vim'
+	Plug 'wadackel/vim-dogrun'
+	Plug 'sainnhe/edge'
 
 " Archive
 	"Plug 'godlygeek/csapprox'
