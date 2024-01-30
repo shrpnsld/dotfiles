@@ -96,7 +96,6 @@ local ICON_FILE_READONLY = vim.fn.nr2char(0xf033e)
 local ICON_FILE_READONLY_MODIFIED = vim.fn.nr2char(0xf0341)
 local ICON_HELP = vim.fn.nr2char(0xf02d6)
 local ICON_DIRECTORY = vim.fn.nr2char(0xf0770)
-local ICON_PLUGIN = vim.fn.nr2char(0xf40e)
 local ICON_TERMINAL = vim.fn.nr2char(0xf489)
 local ICON_PREVIEW = vim.fn.nr2char(0xf0c7d)
 local ICON_QUICKFIX = vim.fn.nr2char(0xf05b7)
@@ -164,8 +163,6 @@ function buffer_icon(buffer_number, buffer_type, file_type)
 
 	if file_type == "netrw" then
 		return ICON_DIRECTORY
-	elseif file_type == "lazy.nvim" or file_type == "vim-plug" then
-		return ICON_PLUGIN
 	elseif file_type == "checkhealth" then
 		return ICON_CHECK_HEALTH
 	end
@@ -297,14 +294,6 @@ function status_line()
 	end
 
 	if buffer.buftype == "nofile" then
-		if buffer.filetype == "vim-plug" then
-			return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_PLUGIN .. " vim-plug" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
-		end
-
-		if buffer.filetype == "lazy.nvim" then
-			return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_PLUGIN .. " lazy.nvim" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
-		end
-
 		if buffer.filetype == "checkhealth" then
 			return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_CHECK_HEALTH .. " Healthcheck" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
 		end

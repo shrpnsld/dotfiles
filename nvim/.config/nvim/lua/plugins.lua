@@ -1,61 +1,27 @@
-vim.cmd [[
-call plug#begin('~/.local/share/nvim/plugged')
-" Utility
-	Plug 'mhinz/vim-signify'
-	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-	Plug 'shrpnsld/trailing-shade.vim'
-	Plug 'shrpnsld/ocd-save.vim'
+require("lazy").setup({
+	-- utility
+	{ "nvim-treesitter/nvim-treesitter", build = ':TSUpdate' },
+	"mhinz/vim-signify",
+	"shrpnsld/ocd-save.vim",
+	"shrpnsld/trailing-shade.vim",
 
-" Color schemes
-	" 'termguicolors'
-	Plug 'catppuccin/nvim', { 'as': 'catppuccin', 'branch': 'main' }
-	Plug 'rebelot/kanagawa.nvim'
-	Plug 'ghifarit53/tokyonight-vim'
-	Plug 'tiagovla/tokyodark.nvim'
-	Plug 'folke/tokyonight.nvim'
-	Plug 'shrikecode/kyotonight.vim'
-	Plug 'franbach/miramare'
+	-- color schemes
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+	"rebelot/kanagawa.nvim",
+	"ghifarit53/tokyonight-vim",
+	"tiagovla/tokyodark.nvim",
+	"folke/tokyonight.nvim",
+	"shrikecode/kyotonight.vim",
+	"franbach/miramare"
 
-	" giving a try
-	Plug 'rose-pine/neovim'
-	Plug 'EdenEast/nightfox.nvim' " duskfox flavor
-	Plug 'cryptomilk/nightcity.nvim' " afterlife flavor
-	Plug 'bluz71/vim-moonfly-colors'
-	Plug 'miikanissi/modus-themes.nvim'
-	Plug 'zootedb0t/citruszest.nvim'
-	Plug 'nyngwang/nvimgelion'
-	Plug 'olimorris/onedarkpro.nvim'
+	-- color schemes "notermguicolors"
+	-- { "dracula/vim", name = "dracula" }
+	-- "rakr/vim-one"
+	-- "nanotech/jellybeans.vim"
+	-- "wadackel/vim-dogrun"
+	-- "sainnhe/edge"
 
-	" color schemes 'notermguicolors'
-	Plug 'dracula/vim', { 'as': 'dracula' }
-	Plug 'rakr/vim-one'
-	Plug 'nanotech/jellybeans.vim'
-	Plug 'wadackel/vim-dogrun'
-	Plug 'sainnhe/edge'
-
-" Archive
-	"Plug 'godlygeek/csapprox'
-call plug#end()
-]]
-
---local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
---if not vim.loop.fs_stat(lazypath) then
---  vim.fn.system({
---    "git",
---    "clone",
---    "--filter=blob:none",
---    "https://github.com/folke/lazy.nvim.git",
---    "--branch=stable", -- latest stable release
---    lazypath,
---  })
---end
---
---vim.opt.rtp:prepend(lazypath)
---
---require("lazy").setup({
---	"mhinz/vim-signify",
---	"nvim-treesitter/nvim-treesitter", {'do': ':TSUpdate'}
---	"shrpnsld/trailing-shade.vim",
---	"shrpnsld/ocd-save.vim"
---})
+	-- acrhive
+	-- "godlygeek/csapprox"
+})
 

@@ -1,0 +1,14 @@
+{
+  "catppuccin": { "branch": "main", "commit": "c2e6f8e7eb8d0ebf55700c89bdf842809aeecf09" },
+  "kanagawa.nvim": { "branch": "master", "commit": "c19b9023842697ec92caf72cd3599f7dd7be4456" },
+  "kyotonight.vim": { "branch": "master", "commit": "040aa565ef75bc1e2b566e3fc5d953ccaecd1447" },
+  "lazy.nvim": { "branch": "main", "commit": "aedcd79811d491b60d0a6577a9c1701063c2a609" },
+  "miramare": { "branch": "master", "commit": "04330816640c3162275d69e7094126727948cd0d" },
+  "nvim-treesitter": { "branch": "master", "commit": "ba6454783493ac3a5dd209c25e491640b07bd8de" },
+  "ocd-save.vim": { "branch": "master", "commit": "de9cf9c393831db22522be688b4cc4f1f13a7952" },
+  "tokyodark.nvim": { "branch": "master", "commit": "b6f365cf5b6a2a2fa7de2578ca047db0721335ec" },
+  "tokyonight-vim": { "branch": "master", "commit": "4e82e0f0452a6ce8f387828ec71013015515035a" },
+  "tokyonight.nvim": { "branch": "main", "commit": "e3301873c1e96903daebb98cc9b5926810bf73dd" },
+  "trailing-shade.vim": { "branch": "master", "commit": "ebea49409cc9284594a40f74f900a239a66f5134" },
+  "vim-signify": { "branch": "master", "commit": "7d538b77a5a8806e344b057f8846f6d0c035efa9" }
+}
