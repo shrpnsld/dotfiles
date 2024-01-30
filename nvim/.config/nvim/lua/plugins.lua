@@ -38,3 +38,24 @@ call plug#begin('~/.local/share/nvim/plugged')
 call plug#end()
 ]]
 
+--local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+--if not vim.loop.fs_stat(lazypath) then
+--  vim.fn.system({
+--    "git",
+--    "clone",
+--    "--filter=blob:none",
+--    "https://github.com/folke/lazy.nvim.git",
+--    "--branch=stable", -- latest stable release
+--    lazypath,
+--  })
+--end
+--
+--vim.opt.rtp:prepend(lazypath)
+--
+--require("lazy").setup({
+--	"mhinz/vim-signify",
+--	"nvim-treesitter/nvim-treesitter", {'do': ':TSUpdate'}
+--	"shrpnsld/trailing-shade.vim",
+--	"shrpnsld/ocd-save.vim"
+--})
+
