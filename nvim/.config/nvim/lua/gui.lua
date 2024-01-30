@@ -133,23 +133,32 @@ local STATUSLINE_SPECIAL_RIGHT_SIDE = " %#StatusLineSpecialSide#" .. RIGHT_BUMP 
 local STATUSLINE_DELIMITER = "%#StatusLineDelimiter# " .. vim.fn.nr2char(0xe216) .. " %#StatusLine#"
 local STATUSLINE_END = LINE_START .. '%{" "}'
 
-function home_relative_or_absolute_path(path)
+function ensure_trailing_slash(path)
+	if path ~= "/" then
+		path = path .. "/"
+	end
+
+	return path
+end
+
+function home_relative_or_absolute_dir_path(path)
 	local path = vim.fn.fnamemodify(path, ":~")
-	return path == "/" and path or path .. "/"
+	return ensure_trailing_slash(path)
+end
+
+function relative_or_home_relative_or_absolute_path(path, root)
+	local where, how_much = path:find(root)
+	if not where or where > 1 then
+		return vim.fn.fnamemodify(path, ":~")
+	end
+
+	local prefix = root == "/" and "/" or "."
+	return prefix .. path:sub(how_much + 1, #path)
 end
 
 function relative_or_absolute_dir_path(path, root)
-	local where, how_much = path:find(root)
-	if not where or where > 1 then
-		return home_relative_or_absolute_path(path)
-	end
-
-	local path = "." .. path:sub(how_much + 1, #path)
-	if path == "./" then
-		return path
-	end
-
-	return path .. "/"
+	local path = relative_or_home_relative_or_absolute_path(path, root)
+	return ensure_trailing_slash(path)
 end
 
 function buffer_icon(buffer_number, buffer_type, file_type)
@@ -225,7 +234,7 @@ function tab_line()
 		printable_length = printable_length + (1 + vim.fn.strdisplaywidth(label) + 1)
 	end
 
-	local cwd = home_relative_or_absolute_path(vim.fn.getcwd())
+	local cwd = home_relative_or_absolute_dir_path(vim.fn.getcwd())
 	local liiine = string.rep("━", vim.o.columns - 2 - printable_length - 4 - #cwd - 2)
 	line = line .. "%#TabLineFill#╺" .. liiine .. "%=" .. LINE_END .. ICON_DIRECTORY .. " " .. cwd .. "╺━"
 
@@ -251,16 +260,8 @@ function current_buffer_name()
 		return "%F"
 	end
 
+	buffer_name = relative_or_home_relative_or_absolute_path(buffer_name, vim.fn.getcwd())
 	buffer_name = buffer_name:gsub(" ", "\u{00a0}")
-
-	if buffer_name:sub(1, 1) == "/" then
-		buffer_name = vim.fn.fnamemodify(buffer_name, ":~")
-		return vim.fn.fnamemodify(buffer_name, ":.")
-	end
-
-	if buffer_name:sub(1, 2) ~= "./" then
-		return "./" .. buffer_name
-	end
 
 	return buffer_name
 end
