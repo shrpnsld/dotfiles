@@ -1,26 +1,14 @@
 --
 -- Utils
 
-function get_highlight_value(name, component, cterm, default)
-	assert(component == "fg" or component == "bg", "'component' parameter expected to be 'fg' or 'bg'")
-
-	local mode = cterm and "cterm" or ""
-
+function get_highlight(name)
 	local highlight = vim.api.nvim_get_hl(0, { name = name })
+
 	if highlight.reverse then
-		if component == "fg" then
-			component = "bg"
-		else
-			component = "fg"
-		end
+		highlight.fg, highlight.bg, highlight.ctermfg, highlight.ctermbg = highlight.bg, highlight.fg, highlight.ctermbg, highlight.ctermfg
 	end
 
-	local value = highlight[mode .. component]
-	if not value then
-		return default or "none"
-	end
-
-	return value
+	return highlight
 end
 
 --
@@ -45,38 +33,27 @@ function correct_status_line_highlights()
 end
 
 function correct_tab_line_fill_highlights()
-	local fg = get_highlight_value("Normal", "fg")
-	local bg = get_highlight_value("Normal", "bg")
-	local ctermfg = get_highlight_value("Normal", "fg", true)
-	local ctermbg = get_highlight_value("Normal", "bg", true)
-
-	vim.api.nvim_set_hl(0, "TabLineFill", { fg = fg, ctermfg = ctermfg })
-	vim.api.nvim_set_hl(0, "TabLine", { fg = fg, bg = bg, ctermfg = ctermfg, ctermbg = ctermbg })
-	vim.api.nvim_set_hl(0, "TabLineSel", { fg = bg, bg = fg, bold = true, ctermfg = ctermbg, ctermbg = ctermfg, cterm = { bold = true } })
+	local Normal = get_highlight('Normal')
+	vim.api.nvim_set_hl(0, "TabLineFill", { fg = Normal.fg, ctermfg = Normal.ctermfg })
+	vim.api.nvim_set_hl(0, "TabLine", { fg = Normal.fg, bg = Normal.bg, ctermfg = Normal.ctermfg, ctermbg = Normal.ctermbg })
+	vim.api.nvim_set_hl(0, "TabLineSel", { fg = Normal.bg, bg = Normal.fg, bold = true, ctermfg = Normal.ctermbg, ctermbg = Normal.ctermfg, cterm = { bold = true } })
 end
 
 function add_status_line_highlights()
-	local normal_fg = get_highlight_value("Normal", "fg")
-	local normal_bg = get_highlight_value("Normal", "bg")
-	local normal_ctermfg = get_highlight_value("Normal", "bg", true)
-	local normal_ctermbg = get_highlight_value("Normal", "fg", true)
-	local string_fg = get_highlight_value("String", "fg")
-	local string_ctermfg = get_highlight_value("String", "fg", true)
-	local function_fg = get_highlight_value("Function", "fg")
-	local function_ctermfg = get_highlight_value("Function", "fg", true)
-	local keyword_fg = get_highlight_value("Keyword", "fg")
-	local keyword_ctermfg = get_highlight_value("Keyword", "fg", true)
-	local number_fg = get_highlight_value("Number", "fg")
-	local number_ctermfg = get_highlight_value("Number", "fg", true)
+	local Normal = get_highlight('Normal')
+	local String = get_highlight('String')
+	local Function = get_highlight('Function')
+	local Keyword = get_highlight('Keyword')
+	local Number = get_highlight('Number')
 
-	vim.api.nvim_set_hl(0, "StatusLineDelimiter", { fg = normal_fg, ctermfg = normal_ctermfg })
-	vim.api.nvim_set_hl(0, "StatusLineSpecialText", { fg = normal_bg, bg = string_fg, bold = true, ctermfg = normal_ctermbg, ctermbg = string_ctermfg, cterm = { bold = true } })
-	vim.api.nvim_set_hl(0, "StatusLineSpecialSide", { fg = string_fg, bg = normal_bg, bold = true, ctermfg = string_ctermfg, ctermbg = normal_ctermbg, cterm = { bold = true } })
-	vim.api.nvim_set_hl(0, "StatusLineBufferName", { fg = string_fg, ctermfg = string_ctermfg })
-	vim.api.nvim_set_hl(0, "StatusLineFileType", { fg = function_fg, ctermfg = function_ctermfg })
-	vim.api.nvim_set_hl(0, "StatusLineEncoding", { fg = keyword_fg, ctermfg = keyword_ctermfg })
-	vim.api.nvim_set_hl(0, "StatusLineLEFormat", { fg = keyword_fg, ctermfg = keyword_ctermfg })
-	vim.api.nvim_set_hl(0, "StatusLineLineCount", { fg = number_fg, ctermfg = number_ctermfg })
+	vim.api.nvim_set_hl(0, "StatusLineDelimiter", { fg = Normal.fg, ctermfg = Normal.ctermfg })
+	vim.api.nvim_set_hl(0, "StatusLineSpecialText", { fg = Normal.bg, bg = String.fg, bold = true, ctermfg = Normal.ctermbg, ctermbg = String.ctermfg, cterm = { bold = true } })
+	vim.api.nvim_set_hl(0, "StatusLineSpecialSide", { fg = String.fg, bg = Normal.bg, bold = true, ctermfg = String.ctermfg, ctermbg = Normal.ctermbg, cterm = { bold = true } })
+	vim.api.nvim_set_hl(0, "StatusLineBufferName", { fg = String.fg, ctermfg = String.ctermfg })
+	vim.api.nvim_set_hl(0, "StatusLineFileType", { fg = Function.fg, ctermfg = Function.ctermfg })
+	vim.api.nvim_set_hl(0, "StatusLineEncoding", { fg = Keyword.fg, ctermfg = Keyword.ctermfg })
+	vim.api.nvim_set_hl(0, "StatusLineLEFormat", { fg = Keyword.fg, ctermfg = Keyword.ctermfg })
+	vim.api.nvim_set_hl(0, "StatusLineLineCount", { fg = Number.fg, ctermfg = Number.ctermfg })
 end
 
 local augroup = vim.api.nvim_create_augroup("ColorSchemeCorrections", { clear = true })
