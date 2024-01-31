@@ -56,6 +56,15 @@ function add_status_line_highlights()
 	vim.api.nvim_set_hl(0, "StatusLineLineCount", { fg = Number.fg, ctermfg = Number.ctermfg })
 end
 
+function correct_diff_highlights(links)
+	return function()
+		for target, source in pairs(links) do
+			local highlight = get_highlight(source)
+			vim.api.nvim_set_hl(0, target, { fg = highlight.fg, ctermfg = highlight.ctermfg })
+		end
+	end
+end
+
 local augroup = vim.api.nvim_create_augroup("ColorSchemeCorrections", { clear = true })
 vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_cursor_line_highlights })
 vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_match_paren_highlights })
@@ -63,6 +72,7 @@ vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, cal
 vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_status_line_highlights })
 vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_tab_line_fill_highlights })
 vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = add_status_line_highlights })
+vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_diff_highlights({ DiffAdd = 'String', DiffChange = 'Function', DiffDelete = 'Error' }) })
 
 --
 -- Tabline and statusline
