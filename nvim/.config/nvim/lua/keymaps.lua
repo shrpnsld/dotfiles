@@ -31,12 +31,22 @@ vim.keymap.set("", "<Tab>", "<cmd>tabnext<cr>", { silent = true, desc = "Next ta
 vim.keymap.set("", "<S-Tab>", "<cmd>tabprevious<cr>", { silent = true, desc = "Previous tab" })
 vim.keymap.set("", "<Leader><Tab>", move_tab_right, { silent = true, desc = "Move tab right" })
 vim.keymap.set("", "<Leader><S-Tab>", move_tab_left, { silent = true, desc = "Move tab left" })
-vim.keymap.set("", "<Leader>f", toggle_quickfix_list, { silent = true, desc = "Toggle Quickfix list" })
-vim.keymap.set("", "<Leader>a", "<Cmd>make!<CR>", { silent = true, desc = "Build project" })
-vim.keymap.set("", "<Leader>p", "<Cmd>pclose<CR>", { silent = true, desc = "Close preview" })
+
+-- Quickfix List
+vim.keymap.set("", "<Leader>x", toggle_quickfix_list, { silent = true, desc = "Toggle Quickfix List" })
+vim.keymap.set("", "<Leader>c", "<Cmd>cnext<CR>", { silent = true, desc = "Next in Quickfix List" })
+vim.keymap.set("", "<Leader>z",  "<Cmd>cprevious<CR>", { silent = true, desc = "Previous in Quickfix List" })
+
+-- Buffers
 vim.keymap.set("", "<Leader>w", "<Cmd>bwipeout<CR>", { silent = true, desc = "Buffer wipeout" })
-vim.keymap.set("", "<Leader>t", "<Cmd>Texplore<CR>", { silent = true, desc = "Netrw explore in a new tab" })
-vim.keymap.set("", "<Leader>e", "<Cmd>Explore<CR>", { silent = true, desc = "Netrw explore in current buffer" })
 vim.keymap.set("", "<Leader>q", "<Cmd>quit<CR>", { silent = true, desc = "Quit buffer" })
+vim.keymap.set("", "<Leader>p", "<Cmd>pclose<CR>", { silent = true, desc = "Close preview" })
+
+-- Netrw
+vim.keymap.set("", "<Leader>.", "<Cmd>Explore<CR>", { silent = true, desc = "Netrw explore in current buffer" })
+vim.keymap.set("", "<Leader>>", "<Cmd>Texplore<CR>", { silent = true, desc = "Netrw explore in a new tab" })
+
+-- Other Stuff
 vim.keymap.set("", "<Leader>/", "<Cmd>nohlsearch<CR>", { silent = true, desc = "Stop highlighting search" })
+vim.keymap.set("", "<Leader>a", "<Cmd>make!<CR>", { silent = true, desc = "Build project" })
 
