@@ -1,4 +1,4 @@
-function move_tab_left()
+local function move_tab_left()
 	if vim.fn.tabpagenr() > 1 then
 		vim.cmd [[ tabmove - ]]
 	else
@@ -6,7 +6,7 @@ function move_tab_left()
 	end
 end
 
-function move_tab_right()
+local function move_tab_right()
 	if vim.fn.tabpagenr() < vim.fn.tabpagenr("$") then
 		vim.cmd [[ tabmove + ]]
 	else
@@ -42,8 +42,8 @@ function telescope_find_files_any()
 end
 
 -- Tabs
-vim.keymap.set("", "<Tab>", "<cmd>tabnext<cr>", { silent = true, desc = "Next tab" })
-vim.keymap.set("", "<S-Tab>", "<cmd>tabprevious<cr>", { silent = true, desc = "Previous tab" })
+vim.keymap.set("", "<Tab>", "gt", { silent = true, desc = "Next tab" })
+vim.keymap.set("", "<S-Tab>", "gT", { silent = true, desc = "Previous tab" })
 vim.keymap.set("", "<Leader><Tab>", move_tab_right, { silent = true, desc = "Move tab right" })
 vim.keymap.set("", "<Leader><S-Tab>", move_tab_left, { silent = true, desc = "Move tab left" })
 
