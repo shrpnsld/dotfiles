@@ -1,4 +1,4 @@
-local function move_tab_left()
+function move_tab_left()
 	if vim.fn.tabpagenr() > 1 then
 		vim.cmd [[ tabmove - ]]
 	else
@@ -6,7 +6,7 @@ local function move_tab_left()
 	end
 end
 
-local function move_tab_right()
+function move_tab_right()
 	if vim.fn.tabpagenr() < vim.fn.tabpagenr("$") then
 		vim.cmd [[ tabmove + ]]
 	else
@@ -50,7 +50,7 @@ vim.keymap.set("", "<Leader><S-Tab>", move_tab_left, { silent = true, desc = "Mo
 -- Quickfix List
 vim.keymap.set("", "<Leader>x", toggle_quickfix_list, { silent = true, desc = "Toggle Quickfix List" })
 vim.keymap.set("", "<Leader>c", "<Cmd>cnext<CR>", { silent = true, desc = "Next in Quickfix List" })
-vim.keymap.set("", "<Leader>z",  "<Cmd>cprevious<CR>", { silent = true, desc = "Previous in Quickfix List" })
+vim.keymap.set("", "<Leader>z", "<Cmd>cprevious<CR>", { silent = true, desc = "Previous in Quickfix List" })
 
 -- Buffers
 vim.keymap.set("", "<Leader>w", "<Cmd>bwipeout<CR>", { silent = true, desc = "Buffer wipeout" })

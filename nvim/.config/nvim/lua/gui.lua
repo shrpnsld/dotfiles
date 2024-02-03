@@ -134,7 +134,7 @@ function home_relative_or_absolute_dir_path(path)
 end
 
 function relative_or_home_relative_or_absolute_path(path, root)
-	local where, how_much = path:find(root)
+	local where, how_much = path:find(root, 1, true)
 	if not where or where > 1 then
 		return vim.fn.fnamemodify(path, ":~")
 	end

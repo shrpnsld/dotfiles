@@ -1,4 +1,6 @@
-require("telescope").setup {
+local telescope = require("telescope")
+
+telescope.setup {
 	defaults = {
 		sorting_strategy = "ascending",
 		layout_config = {
@@ -16,5 +18,5 @@ require("telescope").setup {
 	}
 }
 
-require('telescope').load_extension("fzf")
+telescope.load_extension("fzf")
 
