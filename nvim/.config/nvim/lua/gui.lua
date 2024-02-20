@@ -65,60 +65,67 @@ function correct_diff_highlights(links)
 	end
 end
 
-local augroup = vim.api.nvim_create_augroup("ColorSchemeCorrections", { clear = true })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_cursor_line_highlights })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_match_paren_highlights })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_window_highlights })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_status_line_highlights })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_tab_line_fill_highlights })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = add_status_line_highlights })
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_diff_highlights({ DiffAdd = 'String', DiffChange = 'Function', DiffDelete = 'Error' }) })
+do
+	local augroup = vim.api.nvim_create_augroup("ColorSchemeCorrections", { clear = true })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_cursor_line_highlights })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_match_paren_highlights })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_window_highlights })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_status_line_highlights })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_tab_line_fill_highlights })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = add_status_line_highlights })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_diff_highlights({ DiffAdd = 'String', DiffChange = 'Function', DiffDelete = 'Error' }) })
+end
 
 --
 -- Tabline and statusline
 
-local ICON_FILE = vim.fn.nr2char(0xf0214)
-local ICON_FILE_MODIFIED = vim.fn.nr2char(0xf0224)
-local ICON_FILE_READONLY = vim.fn.nr2char(0xf033e)
-local ICON_FILE_READONLY_MODIFIED = vim.fn.nr2char(0xf0341)
-local ICON_HELP = vim.fn.nr2char(0xf02d6)
-local ICON_DIRECTORY = vim.fn.nr2char(0xf0770)
-local ICON_TERMINAL = vim.fn.nr2char(0xf489)
-local ICON_PREVIEW = vim.fn.nr2char(0xf0c7d)
-local ICON_QUICKFIX = vim.fn.nr2char(0xf05b7)
-local ICON_CHECK_HEALTH = vim.fn.nr2char(0xf08d0)
+local ICON_FILE = "󰈔"
+local ICON_FILE_MODIFIED = "󰈤"
+local ICON_FILE_READONLY = "󰌾"
+local ICON_FILE_READONLY_MODIFIED = "󰍁"
+local ICON_HELP = "󰋖"
+local ICON_DIRECTORY = "󰝰"
+local ICON_TERMINAL = ""
+local ICON_PREVIEW = "󰱽"
+local ICON_QUICKFIX = "󰖷"
+local ICON_CHECK_HEALTH = "󰣐"
+local ICON_LINE_COUNT = "󰯃"
 
-local LINE_START = "%#StatusLine#╺"
-local LINE_END = "╸"
+--local LINE_START = "%#StatusLine#╺"
+--local LINE_END = "╸"
+local TABLINE_LINE_START = "%#StatusLine#╺"
+local TABLINE_LINE_END = "╸"
+local STATUSLINE_LINE_START = "%#StatusLine# "
+local STATUSLINE_LINE_END = " "
 
 -- Rectangle
 -- local LEFT_BUMP = ""
 -- local RIGHT_BUMP = ""
 
 -- Pill
-local LEFT_BUMP = vim.fn.nr2char(0xe0b6)
-local RIGHT_BUMP = vim.fn.nr2char(0xe0b4)
+local LEFT_BUMP = ""
+local RIGHT_BUMP = ""
 
 -- Skewed
--- local LEFT_BUMP = vim.fn.nr2char(0xe0ba)
--- local RIGHT_BUMP = vim.fn.nr2char(0xe0bc)
+-- local LEFT_BUMP = ""
+-- local RIGHT_BUMP = ""
 
 -- Hexagon
--- local LEFT_BUMP = vim.fn.nr2char(0xe0b2)
--- local RIGHT_BUMP = vim.fn.nr2char(0xe0b0)
+-- local LEFT_BUMP = ""
+-- local RIGHT_BUMP = ""
 
 -- Hexagon 2
--- local LEFT_BUMP = vim.fn.nr2char(0xf053) .. vim.fn.nr2char(0xe0b2)
--- local RIGHT_BUMP = vim.fn.nr2char(0xe0b0) .. vim.fn.nr2char(0xf054)
+-- local LEFT_BUMP = ""
+-- local RIGHT_BUMP = ""
 
 -- Hexagon 3
--- local LEFT_BUMP = vim.fn.nr2char(0xe0b3) .. vim.fn.nr2char(0xe0b2)
--- local RIGHT_BUMP = vim.fn.nr2char(0xe0b0) .. vim.fn.nr2char(0xe0b1)
+-- local LEFT_BUMP = ""
+-- local RIGHT_BUMP = ""
 
 local STATUSLINE_SPECIAL_LEFT_SIDE = "%#StatusLineSpecialSide#" .. LEFT_BUMP .. "%#StatusLineSpecialText# "
 local STATUSLINE_SPECIAL_RIGHT_SIDE = " %#StatusLineSpecialSide#" .. RIGHT_BUMP .. "%#StatusLine#"
-local STATUSLINE_DELIMITER = "%#StatusLineDelimiter# " .. vim.fn.nr2char(0xe216) .. " %#StatusLine#"
-local STATUSLINE_END = LINE_START .. '%{" "}'
+local STATUSLINE_DELIMITER = "%#StatusLineDelimiter#  %#StatusLine#"
+local STATUSLINE_END = STATUSLINE_LINE_START .. '%{"  "}'
 
 function ensure_trailing_slash(path)
 	if path ~= "/" then
@@ -204,8 +211,12 @@ function tab_label(tab_number)
 	return icon .. ' ' .. label
 end
 
+local TABLINE_TEMPLATE_START = "%#TabLineFill#━" .. TABLINE_LINE_END
+local TABLINE_TEMPLATE_LIIINE_START = "%#TabLineFill#" .. TABLINE_LINE_START
+local TABLINE_TEMPLATE_ICON_DIRECTORY = "%= " .. ICON_DIRECTORY .. " "
+
 function tab_line()
-	local line = "%#TabLineFill#━" .. LINE_END
+	local line = TABLINE_TEMPLATE_START
 	local printable_length = 0
 
 	for index = 1, vim.fn.tabpagenr("$") do
@@ -222,8 +233,8 @@ function tab_line()
 	end
 
 	local cwd = home_relative_or_absolute_dir_path(vim.fn.getcwd())
-	local liiine = string.rep("━", vim.o.columns - 2 - printable_length - 4 - #cwd - 2)
-	line = line .. "%#TabLineFill#╺" .. liiine .. "%=" .. LINE_END .. ICON_DIRECTORY .. " " .. cwd .. "╺━"
+	local liiine = string.rep("━", vim.o.columns - 2 - printable_length - 4 - #cwd - 3)
+	line = line .. TABLINE_TEMPLATE_LIIINE_START .. liiine .. TABLINE_TEMPLATE_ICON_DIRECTORY .. cwd .. " ━━"
 
 	return line
 end
@@ -256,8 +267,23 @@ end
 function current_buffer_file_type()
 	local buffer_number = vim.api.nvim_win_get_buf(0)
 	local buffer = vim.bo[buffer_number]
-	return buffer.filetype == "" and string.rep(vim.fn.nr2char(183), 3) or buffer.filetype
+	return buffer.filetype == "" and "···" or buffer.filetype
 end
+
+local STATUSLINE_TEMPLATE_NETRW = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_DIRECTORY .. " netrw" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#"
+local STATUSLINE_TEMPLATE_HELP = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_HELP .. " Help" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#"
+
+local STATUSLINE_TEMPLATE_FILE_PREVIEW_AND_BUFFER_NAME = "%#StatusLine#%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_PREVIEW .. " Preview" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " "
+local STATUSLINE_TEMPLATE_FILE_BUFFER_NAME = "%#StatusLine#%=" .. STATUSLINE_LINE_END .. "%#StatusLineBufferName#"
+local STATUSLINE_TEMPLATE_FILE_TYPE = STATUSLINE_DELIMITER .. "%#StatusLineFileType#"
+local STATUSLINE_TEMPLATE_FILE_ENCODING = STATUSLINE_DELIMITER .. "%#StatusLineEncoding#"
+local STATUSLINE_TEMPLATE_FILE_LINE_ENDING = STATUSLINE_DELIMITER .. "%#StatusLineLEFormat#"
+local STATUSLINE_TEMPLATE_FILE_LINE_COUNT_AND_END = STATUSLINE_DELIMITER .. "%#StatusLineLineCount#" .. ICON_LINE_COUNT .. " %L" .. STATUSLINE_END
+
+local STATUSLINE_CHECKHEALTH = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_CHECK_HEALTH .. " Healthcheck" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
+local STATUSLINE_TERMINAL = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_TERMINAL .. " Terminal" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#%F" .. STATUSLINE_END
+local STATUSLINE_OTHER_SPECIAL = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. "%F" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
+local STATUSLINE_QUICKFIX = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_QUICKFIX .. " Quickfix List" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
 
 function status_line()
 	local buffer_number = vim.api.nvim_win_get_buf(0)
@@ -266,42 +292,51 @@ function status_line()
 	if buffer.filetype == "netrw" then
 		local netrw_current_dir = vim.fn.expand(vim.api.nvim_buf_get_var(0, "netrw_curdir"))
 		local path = relative_or_absolute_dir_path(netrw_current_dir, vim.fn.getcwd())
-		return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. current_buffer_icon() .. " netrw" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#" .. path .. STATUSLINE_END
+		return STATUSLINE_TEMPLATE_NETRW .. path .. STATUSLINE_END
 	end
 
 	if buffer.buftype == "" then
-		return
-			"%#StatusLine#%=" .. LINE_END
-			.. (vim.wo.previewwindow and STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_PREVIEW .. " Preview" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " " or "")
-			.. "%#StatusLineBufferName#" .. current_buffer_icon() .. " " .. current_buffer_name()
-			.. STATUSLINE_DELIMITER .. "%#StatusLineFileType#" .. current_buffer_file_type()
-			.. STATUSLINE_DELIMITER .. "%#StatusLineEncoding#" .. (buffer.fileencoding ~= "" and buffer.fileencoding or vim.o.encoding)
-			.. STATUSLINE_DELIMITER .. "%#StatusLineLEFormat#" .. buffer.fileformat
-			.. STATUSLINE_DELIMITER .. "%#StatusLineLineCount#" .. vim.fn.nr2char(0xf0bc3) .. " %L"
-			.. STATUSLINE_END
+		if vim.wo.previewwindow then
+			return
+				STATUSLINE_TEMPLATE_FILE_PREVIEW_AND_BUFFER_NAME
+				.. "%#StatusLineBufferName#" .. current_buffer_icon() .. " " .. current_buffer_name()
+				.. STATUSLINE_TEMPLATE_FILE_TYPE .. current_buffer_file_type()
+				.. STATUSLINE_TEMPLATE_FILE_ENCODING .. (buffer.fileencoding ~= "" and buffer.fileencoding or vim.o.encoding)
+				.. STATUSLINE_TEMPLATE_FILE_LINE_ENDING .. buffer.fileformat
+				.. STATUSLINE_TEMPLATE_FILE_LINE_COUNT_AND_END
+		else
+			return
+				STATUSLINE_TEMPLATE_FILE_BUFFER_NAME
+				.. "%#StatusLineBufferName#" .. current_buffer_icon() .. " " .. current_buffer_name()
+				.. STATUSLINE_TEMPLATE_FILE_TYPE .. current_buffer_file_type()
+				.. STATUSLINE_TEMPLATE_FILE_ENCODING .. (buffer.fileencoding ~= "" and buffer.fileencoding or vim.o.encoding)
+				.. STATUSLINE_TEMPLATE_FILE_LINE_ENDING .. buffer.fileformat
+				.. STATUSLINE_TEMPLATE_FILE_LINE_COUNT_AND_END
+		end
 	end
 
 	if buffer.buftype == "nofile" then
 		if buffer.filetype == "checkhealth" then
-			return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_CHECK_HEALTH .. " Healthcheck" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
+			return STATUSLINE_CHECKHEALTH
 		end
 
 		-- and other plugin managers, I guess...
 	end
 
 	if buffer.buftype == "help" then
-		return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_HELP .. " Help" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#" .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buffer_number), ":t") .. STATUSLINE_END
+		return STATUSLINE_TEMPLATE_HELP .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buffer_number), ":t") .. STATUSLINE_END
 	end
 
 	if buffer.buftype == "terminal" then
-		return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_TERMINAL .. " Terminal" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#%F" .. STATUSLINE_END
+		return STATUSLINE_TERMINAL
 	end
 
-	return "%=" .. LINE_END .. "%#StatusLineBufferName#%F" .. STATUSLINE_END
+	return STATUSLINE_OTHER_SPECIAL
 end
 
+
 function quickfix_list_status_line()
-	return "%=" .. LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_QUICKFIX .. " Quickfix List" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
+	return STATUSLINE_QUICKFIX
 end
 
 vim.opt.fillchars:append {stl = "━", stlnc = "━", vert = "┃", horizup = "┻", horizdown = "┳", vertleft = "┫", vertright = "┣", verthoriz = "╋", wbr = "═", msgsep = "═"}
@@ -310,6 +345,8 @@ vim.opt.showtabline = 2
 vim.opt.tabline = "%!v:lua.tab_line()"
 vim.opt.statusline = "%{%v:lua.status_line()%}"
 
-local augroup = vim.api.nvim_create_augroup("status_line_customization", { clear = true })
-vim.api.nvim_create_autocmd("FileType", { pattern = "qf", group = augroup, callback = function() vim.wo.statusline = "%!v:lua.quickfix_list_status_line()" end } )
+do
+	local augroup = vim.api.nvim_create_augroup("status_line_customization", { clear = true })
+	vim.api.nvim_create_autocmd("FileType", { pattern = "qf", group = augroup, callback = function() vim.wo.statusline = "%!v:lua.quickfix_list_status_line()" end } )
+end
 
