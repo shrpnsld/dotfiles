@@ -33,7 +33,7 @@ function correct_status_line_highlights()
 end
 
 function correct_tab_line_fill_highlights()
-	local Normal = get_highlight('Normal')
+	local Normal = get_highlight("Normal")
 	vim.api.nvim_set_hl(0, "TabLineFill", { fg = Normal.fg, ctermfg = Normal.ctermfg })
 	vim.api.nvim_set_hl(0, "TabLine", { fg = Normal.fg, bg = Normal.bg, ctermfg = Normal.ctermfg, ctermbg = Normal.ctermbg })
 	vim.api.nvim_set_hl(0, "TabLineSel", { fg = Normal.bg, bg = Normal.fg, bold = true, ctermfg = Normal.ctermbg, ctermbg = Normal.ctermfg, cterm = { bold = true } })
@@ -65,6 +65,14 @@ function correct_diff_highlights(links)
 	end
 end
 
+function correct_neo_tree_highlights()
+	local Normal = get_highlight("Normal")
+	local FloatBorder = get_highlight("FloatBorder")
+	vim.api.nvim_set_hl(0, "NeoTreeFloatBorder", { fg = FloatBorder.fg, bg = Normal.bg, ctermfg = FloatBorder.ctermfg, ctermbg = Normal.ctermbg })
+
+	vim.api.nvim_set_hl(0, "NeoTreeCursorLine", { link = "Visual" });
+end
+
 do
 	local augroup = vim.api.nvim_create_augroup("ColorSchemeCorrections", { clear = true })
 	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_cursor_line_highlights })
@@ -73,7 +81,8 @@ do
 	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_status_line_highlights })
 	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_tab_line_fill_highlights })
 	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = add_status_line_highlights })
-	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_diff_highlights({ DiffAdd = 'String', DiffChange = 'Function', DiffDelete = 'Error' }) })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_diff_highlights({ DiffAdd = "String", DiffChange = "Function", DiffDelete = "Error" }) })
+	vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", group = augroup, callback = correct_neo_tree_highlights })
 end
 
 --
@@ -284,6 +293,7 @@ local STATUSLINE_CHECKHEALTH = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL
 local STATUSLINE_TERMINAL = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_TERMINAL .. " Terminal" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. " %#StatusLineBufferName#%F" .. STATUSLINE_END
 local STATUSLINE_OTHER_SPECIAL = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. "%F" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
 local STATUSLINE_QUICKFIX = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_QUICKFIX .. " Quickfix List" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
+local STATUSLINE_NEO_TREE = "%=" .. STATUSLINE_LINE_END .. STATUSLINE_SPECIAL_LEFT_SIDE .. ICON_DIRECTORY .. " neo-tree" .. STATUSLINE_SPECIAL_RIGHT_SIDE .. STATUSLINE_END
 
 function status_line()
 	local buffer_number = vim.api.nvim_win_get_buf(0)
@@ -320,7 +330,11 @@ function status_line()
 			return STATUSLINE_CHECKHEALTH
 		end
 
-		-- and other plugin managers, I guess...
+		if buffer.filetype == "neo-tree" then
+			return STATUSLINE_NEO_TREE
+		end
+
+		-- and other...
 	end
 
 	if buffer.buftype == "help" then
