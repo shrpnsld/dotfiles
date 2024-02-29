@@ -40,11 +40,11 @@ function correct_tab_line_fill_highlights()
 end
 
 function add_status_line_highlights()
-	local Normal = get_highlight('Normal')
-	local String = get_highlight('String')
-	local Function = get_highlight('Function')
-	local Keyword = get_highlight('Keyword')
-	local Number = get_highlight('Number')
+	local Normal = get_highlight("Normal")
+	local String = get_highlight("String")
+	local Function = get_highlight("Function")
+	local Keyword = get_highlight("Keyword")
+	local Number = get_highlight("Number")
 
 	vim.api.nvim_set_hl(0, "StatusLineDelimiter", { fg = Normal.fg, ctermfg = Normal.ctermfg })
 	vim.api.nvim_set_hl(0, "StatusLineSpecialText", { fg = Normal.bg, bg = String.fg, bold = true, ctermfg = Normal.ctermbg, ctermbg = String.ctermfg, cterm = { bold = true } })
@@ -58,9 +58,10 @@ end
 
 function correct_diff_highlights(links)
 	return function()
+		local SignColumn = get_highlight("SignColumn")
 		for target, source in pairs(links) do
 			local highlight = get_highlight(source)
-			vim.api.nvim_set_hl(0, target, { fg = highlight.fg, ctermfg = highlight.ctermfg })
+			vim.api.nvim_set_hl(0, target, { fg = highlight.fg, bg = SignColumn.bg, ctermfg = highlight.ctermfg, ctermbg = SignColumn.ctermbg })
 		end
 	end
 end
@@ -173,7 +174,7 @@ function buffer_icon(buffer_number, buffer_type, file_type)
 		return ICON_QUICKFIX
 	end
 
-	if file_type == "netrw" then
+	if file_type == "neo-tree" or file_type == "netrw" then
 		return ICON_DIRECTORY
 	elseif file_type == "checkhealth" then
 		return ICON_CHECK_HEALTH
@@ -204,20 +205,22 @@ function tab_label(tab_number)
 	local icon = buffer_icon(buffer_number, buffer.buftype, buffer.filetype)
 
 	local label = nil
-	if buffer.filetype == "netrw" then
-		local netrw_current_dir = vim.fn.expand(vim.api.nvim_buf_get_var(buffer_number, "netrw_curdir"))
-		label = vim.fn.fnamemodify(netrw_current_dir, ":t") .. "/"
-	elseif buffer.filetype == "checkhealth" then
-		label = "Healthcheck"
+	if buffer.filetype == "neo-tree" then
+		label = "neo-tree"
 	elseif buffer.buftype == "quickfix" then
 		label = "Quickfix List"
-	elseif buffer_name == '' then
+	elseif buffer_name == "" then
 		label = "[No Name]"
+	elseif buffer.filetype == "checkhealth" then
+		label = "Healthcheck"
+	elseif buffer.filetype == "netrw" then
+		local netrw_current_dir = vim.fn.expand(vim.api.nvim_buf_get_var(buffer_number, "netrw_curdir"))
+		label = vim.fn.fnamemodify(netrw_current_dir, ":t") .. "/"
 	else
 		label = vim.fn.fnamemodify(buffer_name, ":t")
 	end
 
-	return icon .. ' ' .. label
+	return icon .. " " .. label
 end
 
 local TABLINE_TEMPLATE_START = "%#TabLineFill#━" .. TABLINE_LINE_END
