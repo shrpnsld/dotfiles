@@ -64,6 +64,7 @@ vim.g.mapleader = " "
 -- Preventing these mappings to move between tabs
 vim.keymap.set("", "<Leader><Tab>", "", { silent = true })
 vim.keymap.set("", "<Leader><S-Tab>", "", { silent = true })
+
 -- Tabs
 vim.keymap.set("", "<Tab>", next_tab, { silent = true, desc = "Next tab" })
 vim.keymap.set("", "<S-Tab>", previous_tab, { silent = true, desc = "Previous tab" })
@@ -116,6 +117,28 @@ vim.keymap.set("", "<Leader><S-Tab>f", "<Cmd>-tabnew | lua telescope_find_files_
 vim.keymap.set("", "<Leader><S-Tab>F", "<Cmd>-tabnew | lua telescope_find_files_any()<CR>", { silent = true, desc = "Fuzzy find files, including 'build/' and 'external/' directories in a new tab before current one" })
 vim.keymap.set("", "<Leader><S-Tab>b", "<Cmd>-tabnew | lua require('telescope.builtin').buffers()<CR>", { silent = true, desc = "Live grep files in a new tab before current one" })
 vim.keymap.set("", "<Leader><S-Tab>G", "<Cmd>-tabnew | lua require('telescope.builtin').live_grep()<CR>", { silent = true, desc = "Live grep files in a new tab before current one" })
+
+vim.keymap.set("", "<Leader>d", require("telescope.builtin").lsp_definitions, { silent = true, desc = "Fuzzy find in symbol definitions" })
+vim.keymap.set("", "<Leader>r", require("telescope.builtin").lsp_references, { silent = true, desc = "Fuzzy find in symbol references" })
+vim.keymap.set("", "<Leader>t", require("telescope.builtin").lsp_type_definitions, { silent = true, desc = "Fuzzy find in symbol's type definitions" })
+vim.keymap.set("", "<Leader>T", require("telescope.builtin").lsp_implementations, { silent = true, desc = "Fuzzy find in symbol's implementations" })
+vim.keymap.set("", "<Leader>u", require("telescope.builtin").lsp_incoming_calls, { silent = true, desc = "Fuzzy find in symbol's incomming calls" })
+vim.keymap.set("", "<Leader>U", require("telescope.builtin").lsp_outgoing_calls, { silent = true, desc = "Fuzzy find in symbol's outgoing calls" })
+vim.keymap.set("", "<Leader>s", require("telescope.builtin").lsp_document_symbols, { silent = true, desc = "Fuzzy find in document symbols" })
+vim.keymap.set("", "<Leader>S", require("telescope.builtin").lsp_workspace_symbols, { silent = true, desc = "Fuzzy find in workspace symbols" })
+
 vim.keymap.set("", "<Leader>?", require("telescope.builtin").keymaps, { silent = true, desc = "Fuzzy find in keymaps" })
 vim.keymap.set("", "<Leader><Leader>", require("telescope.builtin").resume, { silent = true, desc = "Reopen last Telescope find" })
+
+-- LSP
+vim.keymap.set("", "K", vim.lsp.buf.hover, { silent = true, desc = "LSP hover" })
+vim.keymap.set("", "gD", vim.lsp.buf.declaration, { silent = true, desc = "Go to declaration" })
+vim.keymap.set("", "gd", vim.lsp.buf.definition, { silent = true, desc = "Go to definition" })
+vim.keymap.set("", "gr", vim.lsp.buf.references, { silent = true, desc = "Show references" })
+vim.keymap.set("", "gt", vim.lsp.buf.type_definition, { silent = true, desc = "Go to type definition" })
+vim.keymap.set("", "gT", vim.lsp.buf.implementation, { silent = true, desc = "Show implementations" })
+vim.keymap.set("", "gu", vim.lsp.buf.incoming_calls, { silent = true, desc = "Show incomming calls" })
+vim.keymap.set("", "gU", vim.lsp.buf.outgoing_calls, { silent = true, desc = "Show outgoing calls" })
+vim.keymap.set("", "g\\", "<Cmd>ClangdSwitchSourceHeader<CR>", { silent = true, desc = "Switch between header and source file" })
+vim.keymap.set("", "<Leader>:", vim.lsp.buf.rename, { silent = true, desc = "Rename symbol" })
 

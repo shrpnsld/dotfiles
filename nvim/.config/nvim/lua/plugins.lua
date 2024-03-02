@@ -7,6 +7,8 @@ lazy.setup {
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	{ "nvim-neo-tree/neo-tree.nvim", branch = "v3.x", dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim", } },
 	"nvim-tree/nvim-web-devicons",
+	"neovim/nvim-lspconfig",
+	{ "williamboman/mason.nvim", dependencies = "williamboman/mason-lspconfig.nvim" },
 	"mhinz/vim-signify",
 	"shrpnsld/ocd-save.vim",
 	"shrpnsld/trailing-shade.vim",

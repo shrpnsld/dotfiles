@@ -10,6 +10,7 @@ treesitter.setup {
 		"json",
 		"lua",
 		"markdown",
+		"python",
 		"vim",
 		"vimdoc",
 		"xml",
