@@ -2,7 +2,7 @@
   "version": 1,
   "notes": "",
   "documentation": "\"This file is a QMK Configurator export. You can import this at <https://config.qmk.fm>. It can also be used directly with QMK's source code.\n\nTo setup your QMK environment check out the tutorial: <https://docs.qmk.fm/#/newbs>\n\nYou can convert this file to a keymap.c using this command: `qmk json2c {keymap}`\n\nYou can compile this keymap using this command: `qmk compile {keymap}`\"\n",
-  "keyboard": "gmmk/pro/ansi",
+  "keyboard": "gmmk/pro/rev1/ansi",
   "keymap": "gmmk-pro-ansi-layout",
   "layout": "LAYOUT",
   "layers": [
@@ -52,7 +52,7 @@
       "KC_RBRC",
       "KC_BSLS",
       "KC_HOME",
-      "KC_CAPS",
+      "KC_ESC",
       "KC_A",
       "KC_S",
       "KC_D",
@@ -137,7 +137,7 @@
       "KC_RBRC",
       "KC_BSLS",
       "KC_HOME",
-      "KC_CAPS",
+      "KC_ESC",
       "KC_A",
       "KC_S",
       "KC_D",
@@ -185,7 +185,7 @@
     [],
     [],
     [
-      "RESET",
+      "QK_BOOT",
       "KC_BRID",
       "KC_BRIU",
       "KC_NO",
@@ -270,7 +270,7 @@
       "KC_NO"
     ],
     [
-      "RESET",
+      "QK_BOOT",
       "KC_F1",
       "KC_F2",
       "KC_F3",
@@ -442,7 +442,7 @@
     [],
     [],
     [
-      "RESET",
+      "QK_BOOT",
       "KC_NO",
       "KC_NO",
       "KC_NO",
