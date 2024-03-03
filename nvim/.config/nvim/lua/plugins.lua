@@ -20,7 +20,13 @@ lazy.setup {
 	"tiagovla/tokyodark.nvim",
 	"folke/tokyonight.nvim",
 	"shrikecode/kyotonight.vim",
-	"franbach/miramare"
+	"franbach/miramare",
+	"shaunsingh/moonlight.nvim",
+	"marko-cerovac/material.nvim",
+	"mellow-theme/mellow.nvim"
+
+	-- "rktjmp/lush.nvim",
+	-- "ntk148v/habamax.nvim",
 
 	-- Color schemes "notermguicolors"
 	-- { "dracula/vim", name = "dracula" }
