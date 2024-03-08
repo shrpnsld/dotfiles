@@ -9,8 +9,25 @@ lazy.setup {
 	"nvim-tree/nvim-web-devicons",
 	"neovim/nvim-lspconfig",
 	{ "williamboman/mason.nvim", dependencies = "williamboman/mason-lspconfig.nvim" },
-	"mhinz/vim-signify",
-	"shrpnsld/ocd-save.vim",
+	{ "mhinz/vim-signify",
+		init = function()
+			vim.g.signify_update_on_bufenter = 1
+			vim.g.signify_update_on_focusgained = 1
+			vim.g.signify_sign_add               = "┃"
+			vim.g.signify_sign_delete            = "┃"
+			vim.g.signify_sign_delete_first_line = "┃"
+			vim.g.signify_sign_change            = "┃"
+			vim.g.signify_sign_change_delete     = "┃"
+
+			local augroup = vim.api.nvim_create_augroup("refresh_signify", { clear = true })
+			vim.api.nvim_create_autocmd("TextChanged", { pattern = "*", group = augroup, callback = vim.fn["sy#start"] } )
+			vim.api.nvim_create_autocmd("InsertLeave", { pattern = "*", group = augroup, callback = vim.fn["sy#start"] } )
+		end },
+	{ "shrpnsld/ocd-save.vim",
+		init = function()
+			vim.opt.swapfile = false
+			vim.g.ocd_save_message = vim.v.null
+		end },
 	"shrpnsld/trailing-shade.vim",
 
 	-- Color schemes
