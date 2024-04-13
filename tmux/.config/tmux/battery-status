@@ -3,7 +3,7 @@
 CACHE_PATH="${0%/*}/.battery-status-cache"
 CACHE_REFRESH_RATE=60 # in seconds
 
-# Requires 'Hack Nerd Font'
+# Requires Nerd Font (www.nerdfonts.com)
 #        charging_stages=('󰢟 ' '󰢜 ' '󰂆 ' '󰂇 ' '󰂈 ' '󰢝 ' '󰂉 ' '󰢞 ' '󰂊 ' '󰂋 ' '󰂅 ')
 #finishing_charge_stages=('󰢟 ' '󰢜 ' '󰂆 ' '󰂇 ' '󰂈 ' '󰢝 ' '󰂉 ' '󰢞 ' '󰂊 ' '󰂋 ' '󰂅 ')
 #         charged_stages=('󰂎' '󰁺' '󰁻' '󰁼' '󰁽' '󰁾' '󰁿' '󰂀' '󰂁' '󰂂' '󰁹')
@@ -73,5 +73,5 @@ stage_size=$(( 100 / stage_count ))
 stage_number=$(( percentage / stage_size ))
 stage="${stages[$stage_number]}"
 
-printf '%s%% %s' "$percentage" "$stage"
+printf '%d%% %s' "$percentage" "$stage"
 
