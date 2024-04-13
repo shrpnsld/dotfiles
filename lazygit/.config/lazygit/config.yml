@@ -1,0 +1,12 @@
+gui:
+  theme:
+    selectedLineBgColor:
+      - reverse
+
+    activeBorderColor:
+      - white
+      - bold
+
+    inactiveBorderColor:
+      - '#8080c0'
+
