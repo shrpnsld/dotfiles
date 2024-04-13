@@ -59,6 +59,13 @@ function telescope_find_files_any()
 	}
 end
 
+function rename_symbol()
+	name = vim.fn.input(' Rename symbol: ')
+	if name ~= "" then
+		vim.lsp.buf.rename(name)
+	end
+end
+
 vim.g.mapleader = " "
 
 -- Preventing these mappings to move between tabs
@@ -140,5 +147,5 @@ vim.keymap.set("", "gT", vim.lsp.buf.implementation, { silent = true, desc = "Sh
 vim.keymap.set("", "gu", vim.lsp.buf.incoming_calls, { silent = true, desc = "Show incomming calls" })
 vim.keymap.set("", "gU", vim.lsp.buf.outgoing_calls, { silent = true, desc = "Show outgoing calls" })
 vim.keymap.set("", "g\\", "<Cmd>ClangdSwitchSourceHeader<CR>", { silent = true, desc = "Switch between header and source file" })
-vim.keymap.set("", "<Leader>:", vim.lsp.buf.rename, { silent = true, desc = "Rename symbol" })
+vim.keymap.set("", "<Leader>:", rename_symbol, { silent = true, desc = "Rename symbol" })
 

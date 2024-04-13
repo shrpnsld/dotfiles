@@ -57,7 +57,7 @@ vim.g.netrw_alto = 0
 
 for _, type in ipairs({"Error", "Warn", "Hint", "Info"}) do
 	local highlight = "DiagnosticSign" .. type
-	vim.fn.sign_define(highlight, { text = vim.fn.nr2char(0xf09de), texthl = highlight, numhl = highlight })
+	vim.fn.sign_define(highlight, { texthl = highlight, numhl = highlight })
 end
 
 vim.opt.makeprg = "make-me"
