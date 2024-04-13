@@ -3,17 +3,47 @@
 current_command=${1#-}
 current_path=$2
 window_name=$3
+option=$4
 
 current_shell=${SHELL##*/}
 
+print-icon()
+{
+	case "$1" in
+		cmake|ccmake|ninja) printf ' ' ;; # 󱁤
+		dev|development) printf '󱁤 ' ;;
+		gcc|cpp) printf '󰙲 ' ;;
+		gdb) printf ' ' ;; # 󱁤 
+		ghc*) printf ' ' ;;
+		git|lazygit) printf '󰊢 ' ;; # 󰊢  
+		htop|top) printf '󰑮 ' ;; #  󰑮
+		lua) printf '󰢱 ' ;;
+		nano|pico) printf '󱇨 ' ;;
+		nc) printf '󰲝 ' ;; # 󰲝 󱘖
+		nvim) printf ' ' ;; #  
+		python|Python) printf ' ' ;;
+		ranger|mc|nnn|vimfm) printf '󰉓 ' ;;
+		sqlite3) printf '󰆼 ' ;;
+		test|tests) printf '󰢨 ' ;; # 󰢨 󰄹 󰤑 
+		vim) printf ' ' ;; #  
+		*) printf '󰘔 ' ;;
+	esac
+}
+
 if [ -n "$window_name" ]
 then
+	if [[ $option != '-n' ]]
+	then
+		print-icon "$window_name"
+	fi
+
 	printf '%s' "$window_name"
 	exit
 fi
 
 if [[ $current_command != $current_shell ]]
 then
+	print-icon "$current_command"
 	printf '%s' "$current_command"
 	exit
 fi
