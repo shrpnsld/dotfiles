@@ -23,6 +23,7 @@ print-icon()
 		nvim) printf ' ' ;; #  
 		python|Python) printf ' ' ;;
 		ranger|mc|nnn|vimfm) printf '󰉓 ' ;;
+		ruby) printf '󰴭 ' ;;
 		sqlite3) printf '󰆼 ' ;;
 		test|tests) printf '󰢨 ' ;; # 󰢨 󰄹 󰤑 
 		vim) printf ' ' ;; #  
