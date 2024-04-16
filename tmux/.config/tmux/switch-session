@@ -1,0 +1,33 @@
+#!/bin/bash
+
+BORDER_FG=$(\tmux display-message -p '#{@THEME_MENU_BORDER_FG}')
+SELECTED_FG=$(\tmux display-message -p '#{@THEME_MENU_SELECTED_FG}')
+SELECTED_BG=$(\tmux display-message -p '#{@THEME_MENU_SELECTED_BG}')
+
+attached_session=$(\tmux display-message -p '#S')
+sessions=($(\tmux list-sessions -F '#S'))
+
+menu_items=()
+index=1
+selected=0
+for session in "${sessions[@]}"
+do
+	if [[ $session == $attached_session ]]
+	then
+		item="#{@ICON_CURRENT_SESSION}$session"
+		selected=$(( index - 1 ))
+	else
+		item="  $session"
+	fi
+
+	menu_items+=("$item" $index "switch-client -t $session")
+	(( ++index ))
+done
+
+\tmux display-menu \
+	-T " #{@ICON_SWITCH_SESSION} Switch session " \
+	-b double \
+	-S "fg=$BORDER_FG" \
+	-H "fg=$SELECTED_FG,bg=$SELECTED_BG" \
+	-C $selected "${menu_items[@]}"
+
