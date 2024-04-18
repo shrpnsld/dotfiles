@@ -1,8 +1,8 @@
 #!/bin/bash
 
-BORDER_FG=$(\tmux display-message -p '#{@THEME_MENU_BORDER_FG}')
-SELECTED_FG=$(\tmux display-message -p '#{@THEME_MENU_SELECTED_FG}')
-SELECTED_BG=$(\tmux display-message -p '#{@THEME_MENU_SELECTED_BG}')
+BORDER_FG=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
+SELECTED_FG=$(\tmux display-message -p '#{@CS_MENU_SELECTED_FG}')
+SELECTED_BG=$(\tmux display-message -p '#{@CS_MENU_SELECTED_BG}')
 
 attached_session=$(\tmux display-message -p '#S')
 sessions=($(\tmux list-sessions -F '#S'))
