@@ -110,7 +110,7 @@ vim.keymap.set("", "<Leader>Q", "<Cmd>qa!<CR>", { silent = true, desc = "Just qu
 -- Telescope
 vim.keymap.set("", "<Leader>f", telescope_find_files_in_project, { silent = true, desc = "Fuzzy find files" })
 vim.keymap.set("", "<Leader>F", telescope_find_files_any, { silent = true, desc = "Fuzzy find files, including 'build/' and 'external/' directories" })
-vim.keymap.set("", "<Leader>b", require("telescope.builtin").buffers, { silent = true, desc = "Live grep files" })
+vim.keymap.set("", "<Leader>b", require("telescope.builtin").buffers, { silent = true, desc = "Fuzzy find buffers" })
 vim.keymap.set("", "<Leader>g", require("telescope.builtin").current_buffer_fuzzy_find, { silent = true, desc = "Fuzzy find in current buffer" })
 vim.keymap.set("", "<Leader>G", require("telescope.builtin").live_grep, { silent = true, desc = "Live grep files" })
 vim.keymap.set("", "<Leader>!", require("telescope.builtin").diagnostics, { silent = true, desc = "Fuzzy find in diagnostics" })
