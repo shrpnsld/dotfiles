@@ -24,10 +24,16 @@ do
 	(( ++index ))
 done
 
+\tmux set-option -g status-left " #[fg=#{@CS_STATUS_LEFT_SWITCH_SESSION_FG},bg=#{@CS_STATUS_LEFT_SWITCH_SESSION_BG},bold] #{@ICON_SESSION} #S #[fg=#{@CS_STATUS_FG},bg=#{@CS_STATUS_BG}] #{@ICON_DELIMITER} "
+
 \tmux display-menu \
 	-T " #{@ICON_SWITCH_SESSION} Switch session " \
+	-x 1 \
+	-y S \
 	-b double \
 	-S "fg=$BORDER_FG" \
 	-H "fg=$SELECTED_FG,bg=$SELECTED_BG" \
 	-C $selected "${menu_items[@]}"
+
+\tmux set-option -g status-left "  #{@ICON_SESSION} #S  #{@ICON_DELIMITER} "
 
