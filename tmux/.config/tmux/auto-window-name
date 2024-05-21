@@ -4,27 +4,28 @@ current_command=${1#-}
 current_path=$2
 window_name=$3
 option=$4
+icon=$5
 
 current_shell=${SHELL##*/}
 
 print-icon()
 {
 	case "$1" in
-		cmake|ccmake|ninja) printf ' ' ;; # 󱁤
+		cmake|ccmake|make|ninja) printf ' ' ;; # 󱁤
 		dev|development) printf '󱁤 ' ;;
 		gcc|cpp) printf '󰙲 ' ;;
 		gdb) printf ' ' ;; # 󱁤 
 		ghc*) printf ' ' ;;
 		git|lazygit) printf '󰊢 ' ;; # 󰊢  
 		htop|top) printf '󰑮 ' ;; #  󰑮
-		lua) printf '󰢱 ' ;;
+		lua|luarocks) printf '󰢱 ' ;;
 		nano|pico) printf '󱇨 ' ;;
-		nc) printf '󰲝 ' ;; # 󰲝 󱘖
+		nc|ncat|netcat|ping|network) printf '󰲝 ' ;; # 󰲝 󱘖
 		nvim) printf ' ' ;; #  
 		python|Python) printf ' ' ;;
-		ranger|mc|nnn|vimfm) printf '󰉓 ' ;;
+		ranger|mc|nnn|vimfm|files) printf '󰉓 ' ;;
 		ruby) printf '󰴭 ' ;;
-		sqlite3) printf '󰆼 ' ;;
+		sql|sqlite|sqlite3|database) printf '󰆼 ' ;;
 		test|tests) printf '󰢨 ' ;; # 󰢨 󰄹 󰤑 
 		vim) printf ' ' ;; #  
 		*) printf '󰘔 ' ;;
@@ -33,9 +34,12 @@ print-icon()
 
 if [ -n "$window_name" ]
 then
-	if [[ $option != '-n' ]]
+	if [[ $option != '-i' ]]
 	then
 		print-icon "$window_name"
+	elif [ -n "$icon" ]
+	then
+		print-icon "$icon"
 	fi
 
 	printf '%s' "$window_name"
