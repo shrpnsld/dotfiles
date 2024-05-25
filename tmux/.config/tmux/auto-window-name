@@ -28,6 +28,10 @@ print-icon()
 		sql|sqlite|sqlite3|database) printf '󰆼 ' ;;
 		test|tests) printf '󰢨 ' ;; # 󰢨 󰄹 󰤑 
 		vim) printf ' ' ;; #  
+
+		help|man|?) printf '󰘥 ' ;; # 󰋖
+		flask) printf ' ' ;;
+		game) printf '󰊴 ' ;; #  󱢡 󰊴 
 		*) printf '󰘔 ' ;;
 	esac
 }
