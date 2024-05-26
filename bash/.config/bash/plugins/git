@@ -1,9 +1,9 @@
-git-on()
+git_on()
 {
 	__PROMPT_GIT_ON=true
 }
 
-git-off()
+git_off()
 {
 	__PROMPT_GIT_ON=false
 }
@@ -18,17 +18,17 @@ git-off-changes()
 	__PROMPT_GIT_CHANGES_ON=false
 }
 
-__git-pretty-status()
+__git_pretty_status()
 {
-	if ! __git-exists || ! $__PROMPT_GIT_ON
+	if ! __git_exists || ! $__PROMPT_GIT_ON
 	then
 		return
 	fi
 
 	printf '  '
 
-	local git_dir=$(__git-dir)
-	__git-status "$git_dir"
+	local git_dir=$(__git_dir)
+	__git_status "$git_dir"
 	case $? in
 		$__GIT_STATUS_NO_CHANGES_AND_SYNCED)
 			printf "${__GIT_ICON} %s" "$__GIT_STATUS_RETURN__HEAD"
@@ -69,7 +69,7 @@ __git-pretty-status()
 
 	if $__PROMPT_GIT_CHANGES_ON
 	then
-		__git-changes
+		__git_changes
 	fi
 }
 
@@ -107,17 +107,17 @@ __GIT_MESSAGE_MAX_LENGTH=20
 __PROMPT_GIT_ON=true
 __PROMPT_GIT_CHANGES_ON=false
 
-__git-exists()
+__git_exists()
 {
 	git rev-parse --is-inside-work-tree > /dev/null 2>&1
 }
 
-__git-dir()
+__git_dir()
 {
 	git rev-parse --git-dir
 }
 
-__git-is-synced() {
+__git_is_synced() {
 	local branch=$(git branch --show-current --no-color)
 	local output=$(git branch --format='%(refname) %(upstream)' | grep "^refs/heads/$branch")
 	local output="${output#* }"
@@ -133,7 +133,7 @@ __git-is-synced() {
 	[[ $local_head == $remote_head ]]
 }
 
-__git-is-detached-head()
+__git_is_detached_head()
 {
 	local output=$(git branch --show-current)
 	[[ -z "$output" ]]
@@ -151,7 +151,7 @@ __GIT_STATUS_DETACHED=9
 __GIT_STATUS_RETURN__HEAD=''
 __GIT_STATUS_RETURN__FROM=''
 __GIT_STATUS_RETURN__TO=''
-__git-status()
+__git_status()
 {
 	local git_dir=$1
 
@@ -162,13 +162,13 @@ __git-status()
 	if [[ -f "$git_dir/MERGE_HEAD" ]]
 	then
 		__GIT_STATUS_RETURN__FROM=$(git name-rev --name-only $(cat "$git_dir/MERGE_HEAD"))
-		__GIT_STATUS_RETURN__TO=$(__git-head)
+		__GIT_STATUS_RETURN__TO=$(__git_head)
 		return $__GIT_STATUS_MERGE
 	elif [[ -d "$git_dir/rebase-merge" ]]
 	then
 		local hash=$(cat "$git_dir/rebase-merge/stopped-sha")
 		local name=$(git name-rev --name-only "$hash")
-		local message=$(__git-message "$hash")
+		local message=$(__git_message "$hash")
 
 		__GIT_STATUS_RETURN__FROM=$(printf "$name ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}")
 		__GIT_STATUS_RETURN__TO=$(git name-rev --name-only $(cat "$git_dir/rebase-merge/onto"))
@@ -177,7 +177,7 @@ __git-status()
 	then
 		local hash=$(cat "$git_dir/REBASE_HEAD")
 		local name=$(git name-rev --name-only "$hash")
-		local message=$(__git-message "$hash")
+		local message=$(__git_message "$hash")
 
 		__GIT_STATUS_RETURN__FROM=$(printf "$name ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}")
 		__GIT_STATUS_RETURN__TO=$(git name-rev --name-only $(cat "$git_dir/HEAD"))
@@ -186,27 +186,27 @@ __git-status()
 	then
 		local hash=$(cat "$git_dir/CHERRY_PICK_HEAD")
 		local name=$(git name-rev --name-only "$hash")
-		local message=$(__git-message "$hash")
+		local message=$(__git_message "$hash")
 
 		__GIT_STATUS_RETURN__FROM=$(printf "$name ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}")
-		__GIT_STATUS_RETURN__TO=$(__git-head)
+		__GIT_STATUS_RETURN__TO=$(__git_head)
 		return $__GIT_STATUS_CHERRY
 	elif [[ -f "$git_dir/BISECT_LOG" ]]
 	then
-		__GIT_STATUS_RETURN__HEAD=$(__git-head)
+		__GIT_STATUS_RETURN__HEAD=$(__git_head)
 		return $__GIT_STATUS_BISECT
-	elif __git-is-detached-head
+	elif __git_is_detached_head
 	then
-		__GIT_STATUS_RETURN__HEAD=$(__git-head)
+		__GIT_STATUS_RETURN__HEAD=$(__git_head)
 		return $__GIT_STATUS_DETACHED
 	fi
 
 	[[ -n "$(git status --short 2> /dev/null)" ]]
 	local has_changes=$?
-	__git-is-synced
+	__git_is_synced
 	local synced=$?
 
-	__GIT_STATUS_RETURN__HEAD=$(__git-head)
+	__GIT_STATUS_RETURN__HEAD=$(__git_head)
 	if [[ $has_changes == 1 && $synced == 0 ]]
 	then
 		return $__GIT_STATUS_NO_CHANGES_AND_SYNCED
@@ -222,7 +222,7 @@ __git-status()
 	fi
 }
 
-__git-head()
+__git_head()
 {
 	local head=$(git branch --show-current --no-color 2> /dev/null)
 	if [[ -n "$head" ]]
@@ -232,11 +232,11 @@ __git-head()
 	fi
 
 	local hash=$(git rev-parse --short HEAD)
-	local message=$(__git-message "$hash")
+	local message=$(__git_message "$hash")
 	printf "$hash ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}"
 }
 
-__git-message()
+__git_message()
 {
 	local hash=$1
 
