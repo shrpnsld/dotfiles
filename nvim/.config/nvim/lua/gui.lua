@@ -99,7 +99,7 @@ local ICON_TERMINAL = ""
 local ICON_PREVIEW = "󰱽"
 local ICON_QUICKFIX = "󰖷"
 local ICON_CHECK_HEALTH = "󰣐"
-local ICON_LINE_COUNT = "󰯃"
+local ICON_LINE_COUNT = "󰦨" -- 󰦨 󰯃  󰦪
 
 --local LINE_START = "%#StatusLine#╺"
 --local LINE_END = "╸"
@@ -146,8 +146,8 @@ function ensure_trailing_slash(path)
 end
 
 function home_relative_or_absolute_dir_path(path)
-	local path = vim.fn.fnamemodify(path, ":~")
-	return ensure_trailing_slash(path)
+	local resolved_path = vim.fn.fnamemodify(path, ":~")
+	return ensure_trailing_slash(resolved_path)
 end
 
 function relative_or_home_relative_or_absolute_path(path, root)
@@ -161,8 +161,8 @@ function relative_or_home_relative_or_absolute_path(path, root)
 end
 
 function relative_or_absolute_dir_path(path, root)
-	local path = relative_or_home_relative_or_absolute_path(path, root)
-	return ensure_trailing_slash(path)
+	local resolved_path = relative_or_home_relative_or_absolute_path(path, root)
+	return ensure_trailing_slash(resolved_path)
 end
 
 function buffer_icon(buffer_number, buffer_type, file_type)
@@ -356,7 +356,7 @@ function quickfix_list_status_line()
 	return STATUSLINE_QUICKFIX
 end
 
-vim.opt.fillchars:append {stl = "━", stlnc = "━", vert = "┃", horizup = "┻", horizdown = "┳", vertleft = "┫", vertright = "┣", verthoriz = "╋", wbr = "═", msgsep = "═"}
+vim.opt.fillchars:append { stl = "━", stlnc = "━", vert = "┃", horizup = "┻", horizdown = "┳", vertleft = "┫", vertright = "┣", verthoriz = "╋", wbr = "═", msgsep = "═" }
 
 vim.opt.showtabline = 2
 vim.opt.tabline = "%!v:lua.tab_line()"
