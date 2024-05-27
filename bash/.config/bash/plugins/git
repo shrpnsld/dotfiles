@@ -1,81 +1,30 @@
+#
+# Public
+
 git_on()
 {
-	__PROMPT_GIT_ON=true
+	__GIT_PRETTY_STATUS_ON=1
 }
 
 git_off()
 {
-	__PROMPT_GIT_ON=false
-}
-
-git-on-changes()
-{
-	__PROMPT_GIT_CHANGES_ON=true
-}
-
-git-off-changes()
-{
-	__PROMPT_GIT_CHANGES_ON=false
+	__GIT_PRETTY_STATUS_ON=0
 }
 
 __git_pretty_status()
 {
-	if ! __git_exists || ! $__PROMPT_GIT_ON
-	then
-		return
-	fi
+	git rev-parse --is-inside-work-tree > /dev/null 2>&1
+	[[ $? != 0 || $__GIT_PRETTY_STATUS_ON == 0 ]] && return
 
 	printf '  '
-
-	local git_dir=$(__git_dir)
-	__git_status "$git_dir"
-	case $? in
-		$__GIT_STATUS_NO_CHANGES_AND_SYNCED)
-			printf "${__GIT_ICON} %s" "$__GIT_STATUS_RETURN__HEAD"
-			;;
-
-		$__GIT_STATUS_NO_CHANGES_AND_NOT_SYNCED)
-			printf "${__GIT_ICON} ${__GIT_TS_NOT_SYNCED}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__HEAD"
-			;;
-
-		$__GIT_STATUS_HAS_CHANGES_AND_SYNCED)
-			printf "${__GIT_ICON} %s ${__GIT_TS_CHANGES}${__GIT_ICON_CHANGES}${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__HEAD"
-			;;
-
-		$__GIT_STATUS_HAS_CHANGES_AND_NOT_SYNCED)
-			printf "${__GIT_ICON} ${__GIT_TS_NOT_SYNCED}%s ${__GIT_TS_CHANGES}${__GIT_ICON_CHANGES}${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__HEAD"
-			;;
-
-		$__GIT_STATUS_MERGE)
-			printf "${__GIT_TS_ICON_BAD}${__GIT_ICON} ${__GIT_TS_CONFLICTS}%s ${__GIT_TS_ICON_BAD}${__GIT_ICON_MERGE} ${__GIT_TS_CONFLICTS}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__TO" "$__GIT_STATUS_RETURN__FROM"
-			;;
-
-		$__GIT_STATUS_REBASE)
-			printf "${__GIT_TS_ICON_BAD}${__GIT_ICON} ${__GIT_TS_CONFLICTS}%s ${__GIT_TS_ICON_BAD}${__GIT_ICON_REBASE} ${__GIT_TS_CONFLICTS}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__TO" "$__GIT_STATUS_RETURN__FROM"
-			;;
-
-		$__GIT_STATUS_CHERRY)
-			printf "${__GIT_TS_ICON_BAD}${__GIT_ICON}${__GIT_TS_CLEAR} ${__GIT_TS_CONFLICTS}%s ${__GIT_TS_ICON_BAD}${__GIT_ICON_CHERRY} ${__GIT_TS_CONFLICTS}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__TO" "$__GIT_STATUS_RETURN__FROM"
-			;;
-
-		$__GIT_STATUS_BISECT)
-			printf "${__GIT_TS_ICON_DETACHED}${__GIT_ICON}${__GIT_TS_CLEAR} %s ${__GIT_ICON_BISECT}" "$__GIT_STATUS_RETURN__HEAD"
-			;;
-
-		$__GIT_STATUS_DETACHED)
-			printf "${__GIT_TS_ICON_DETACHED}${__GIT_ICON}${__GIT_TS_CLEAR} %s" "$__GIT_STATUS_RETURN__HEAD"
-			;;
-	esac
-
-	if $__PROMPT_GIT_CHANGES_ON
-	then
-		__git_changes
-	fi
+	__git_head_state
 	__git_changes_summary
 }
 
 #
 # Private
+
+__GIT_PRETTY_STATUS_ON=1
 
 __GIT_ICON='󰊢'
 __GIT_ICON_MERGE=''
@@ -83,49 +32,33 @@ __GIT_ICON_REBASE=''
 __GIT_ICON_CHERRY=''
 __GIT_ICON_BISECT=' '
 __GIT_ICON_CHANGES='󰈙' # 󰈙 󰈤 󱔗 󰧮 󱔘 
+__GIT_ICON_DELIMITER=''
 
 __GIT_TS_CLEAR='\e[0m'
 __GIT_TS_ICON='\e[0m'
 __GIT_TS_ICON_BAD='\e[31m'
 __GIT_TS_ICON_DETACHED='\e[33m'
 __GIT_TS_ICON_BISECT='\e[34m'
-__GIT_TS_CHANGES='\e[33m'
+__GIT_TS_ICON_CHANGES_UNSTAGED='\e[35m'
+__GIT_TS_ICON_CHANGES_STAGED='\e[32m'
+__GIT_TS_ICON_CHANGES_SOME_STAGED='\e[33m'
+__GIT_TS_ICON_CHANGES_CONFLICTS='\e[32m'
+__GIT_TS_CHANGES_UNSTAGED='\e[35m'
+__GIT_TS_CHANGES_STAGED='\e[32m'
+__GIT_TS_CHANGES_CONFLICTS='\e[31m'
 __GIT_TS_NOT_SYNCED='\e[33m'
 __GIT_TS_CONFLICTS='\e[35m'
-__GIT_TS_MESSAGE='\e[32m'
-__GIT_TS_A='\e[32m' # added
-__GIT_TS_C='\e[37m' # copied
-__GIT_TS_D='\e[31m' # deleted
-__GIT_TS_M='\e[33m' # modified
-__GIT_TS_R='\e[34m' # renamed
-__GIT_TS_T='\e[37m' # type changed
-__GIT_TS_U='\e[35m' # unmerged
-__GIT_TS_N='\e[37m' # untracked
-__GIT_TS_I='\e[37m' # ignored
+__GIT_TS_MESSAGE='\e[33m'
 
 __GIT_MESSAGE_MAX_LENGTH=20
 
-__PROMPT_GIT_ON=true
-__PROMPT_GIT_CHANGES_ON=false
-
-__git_exists()
+__git_is_synced()
 {
-	git rev-parse --is-inside-work-tree > /dev/null 2>&1
-}
-
-__git_dir()
-{
-	git rev-parse --git-dir
-}
-
-__git_is_synced() {
 	local branch=$(git branch --show-current --no-color)
 	local output=$(git branch --format='%(refname) %(upstream)' | grep "^refs/heads/$branch")
 	local output="${output#* }"
-	if [[ -z "$output" ]]
-	then
-		return
-	fi
+
+	[[ -z "$output" ]] && return
 
 	local remote_branch="${output#refs/remotes/}"
 	local local_head=$(git rev-parse "$branch")
@@ -140,15 +73,13 @@ __git_is_detached_head()
 	[[ -z "$output" ]]
 }
 
-__GIT_STATUS_NO_CHANGES_AND_SYNCED=1
-__GIT_STATUS_NO_CHANGES_AND_NOT_SYNCED=2
-__GIT_STATUS_HAS_CHANGES_AND_SYNCED=3
-__GIT_STATUS_HAS_CHANGES_AND_NOT_SYNCED=4
-__GIT_STATUS_MERGE=5
-__GIT_STATUS_REBASE=6
-__GIT_STATUS_CHERRY=7
-__GIT_STATUS_BISECT=8
-__GIT_STATUS_DETACHED=9
+__GIT_STATUS_SYNCED=1
+__GIT_STATUS_NOT_SYNCED=2
+__GIT_STATUS_MERGE=3
+__GIT_STATUS_REBASE=4
+__GIT_STATUS_CHERRY=5
+__GIT_STATUS_BISECT=6
+__GIT_STATUS_DETACHED=7
 __GIT_STATUS_RETURN__HEAD=''
 __GIT_STATUS_RETURN__FROM=''
 __GIT_STATUS_RETURN__TO=''
@@ -202,24 +133,13 @@ __git_status()
 		return $__GIT_STATUS_DETACHED
 	fi
 
-	[[ -n "$(git status --short 2> /dev/null)" ]]
-	local has_changes=$?
-	__git_is_synced
-	local synced=$?
-
 	__GIT_STATUS_RETURN__HEAD=$(__git_head)
-	if [[ $has_changes == 1 && $synced == 0 ]]
+	__git_is_synced
+	if [[ $? == 0 ]]
 	then
-		return $__GIT_STATUS_NO_CHANGES_AND_SYNCED
-	elif [[ $has_changes == 1 && $synced == 1 ]]
-	then
-		return $__GIT_STATUS_NO_CHANGES_AND_NOT_SYNCED
-	elif [[ $has_changes == 0 && $synced == 0 ]]
-	then
-		return $__GIT_STATUS_HAS_CHANGES_AND_SYNCED
-	elif [[ $has_changes == 0 && $synced == 1 ]]
-	then
-		return $__GIT_STATUS_HAS_CHANGES_AND_NOT_SYNCED
+		return $__GIT_STATUS_SYNCED
+	else
+		return $__GIT_STATUS_NOT_SYNCED
 	fi
 }
 
@@ -230,11 +150,11 @@ __git_head()
 	then
 		printf "$head"
 		return
+	else
+		local hash=$(git rev-parse --short HEAD)
+		local message=$(__git_message "$hash")
+		printf "$hash ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}"
 	fi
-
-	local hash=$(git rev-parse --short HEAD)
-	local message=$(__git_message "$hash")
-	printf "$hash ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}"
 }
 
 __git_message()
@@ -242,12 +162,43 @@ __git_message()
 	local hash=$1
 
 	local message=$(git show -s --format='%s' "$hash")
-	if [[ ${#message} -gt $__GIT_MESSAGE_MAX_LENGTH ]]
-	then
-		message="${message:0:$__GIT_MESSAGE_MAX_LENGTH}…"
-	fi
-
+	[[ ${#message} -gt $__GIT_MESSAGE_MAX_LENGTH ]] && message="${message:0:$__GIT_MESSAGE_MAX_LENGTH}…"
 	printf '%s' "$message"
+}
+
+__git_head_state()
+{
+	local git_dir=$(git rev-parse --git-dir)
+	__git_status "$git_dir"
+	case $? in
+		$__GIT_STATUS_SYNCED)
+			printf "${__GIT_ICON} %s" "$__GIT_STATUS_RETURN__HEAD"
+			;;
+
+		$__GIT_STATUS_NOT_SYNCED)
+			printf "${__GIT_ICON} ${__GIT_TS_NOT_SYNCED}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__HEAD"
+			;;
+
+		$__GIT_STATUS_MERGE)
+			printf "${__GIT_TS_ICON_BAD}${__GIT_ICON} ${__GIT_TS_CONFLICTS}%s ${__GIT_TS_ICON_BAD}${__GIT_ICON_MERGE} ${__GIT_TS_CONFLICTS}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__TO" "$__GIT_STATUS_RETURN__FROM"
+			;;
+
+		$__GIT_STATUS_REBASE)
+			printf "${__GIT_TS_ICON_BAD}${__GIT_ICON} ${__GIT_TS_CONFLICTS}%s ${__GIT_TS_ICON_BAD}${__GIT_ICON_REBASE} ${__GIT_TS_CONFLICTS}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__TO" "$__GIT_STATUS_RETURN__FROM"
+			;;
+
+		$__GIT_STATUS_CHERRY)
+			printf "${__GIT_TS_ICON_BAD}${__GIT_ICON}${__GIT_TS_CLEAR} ${__GIT_TS_CONFLICTS}%s ${__GIT_TS_ICON_BAD}${__GIT_ICON_CHERRY} ${__GIT_TS_CONFLICTS}%s${__GIT_TS_CLEAR}" "$__GIT_STATUS_RETURN__TO" "$__GIT_STATUS_RETURN__FROM"
+			;;
+
+		$__GIT_STATUS_BISECT)
+			printf "${__GIT_TS_ICON_DETACHED}${__GIT_ICON}${__GIT_TS_CLEAR} %s ${__GIT_ICON_BISECT}" "$__GIT_STATUS_RETURN__HEAD"
+			;;
+
+		$__GIT_STATUS_DETACHED)
+			printf "${__GIT_TS_ICON_DETACHED}${__GIT_ICON}${__GIT_TS_CLEAR} %s" "$__GIT_STATUS_RETURN__HEAD"
+			;;
+	esac
 }
 
 __git_character_at()
@@ -274,7 +225,7 @@ __git_pretty_file_count()
 		local state
 		read -r count state <<< "$line"
 		printf " ${style}%d%s${__GIT_TS_CLEAR}" $count $state
-	done < <(printf '%s' "$counts")
+	done <<< "$counts"
 }
 
 __git_changes_summary()
