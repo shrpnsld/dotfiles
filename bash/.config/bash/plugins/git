@@ -71,6 +71,7 @@ __git_pretty_status()
 	then
 		__git_changes
 	fi
+	__git_changes_summary
 }
 
 #
@@ -249,43 +250,55 @@ __git_message()
 	printf '%s' "$message"
 }
 
-__git-colorize-state()
+__git_character_at()
 {
-	local state=$1
+	local index=$1
 
-	local index
-	for (( index = 0; index < ${#state}; ++index ))
+	local line
+	while IFS= read -r line || [[ -n $line ]]
 	do
-		local character="${state:$index:1}"
-		case "$character" in
-			'A') printf "${__GIT_TS_A}$character" ;;
-			'C') printf "${__GIT_TS_C}$character" ;;
-			'D') printf "${__GIT_TS_D}$character" ;;
-			'M') printf "${__GIT_TS_M}$character" ;;
-			'R') printf "${__GIT_TS_R}$character" ;;
-			'T') printf "${__GIT_TS_T}$character" ;;
-			'U') printf "${__GIT_TS_U}$character" ;;
-			'?') printf "${__GIT_TS_N}$character" ;;
-			'!') printf "${__GIT_TS_I}$character" ;;
-		esac
-		printf "$__GIT_TS_CLEAR"
+		local state="${line:$index:1}"
+		[[ $state != ' ' ]] && printf '%s\n' "$state"
 	done
 }
 
-# NOTE: it doesn't show staged/non-staged state
-__git-changes()
+__git_pretty_file_count()
 {
-	local output
-	output=$(git status --short 2> /dev/null)
-	local status=$(grep '^[\ ]\?[^ ]\+\ ' --only-matching <<< "$output" | sort | uniq -c)
+	local style=$1
+	local counts=$2
+
 	local line
 	while IFS= read -r line || [[ -n $line ]]
 	do
 		local count
 		local state
 		read -r count state <<< "$line"
-		printf ' %d' $count
-		__git-colorize-state "$state"
-	done < <(printf '%s' "$status")
+		printf " ${style}%d%s${__GIT_TS_CLEAR}" $count $state
+	done < <(printf '%s' "$counts")
+}
+
+__git_changes_summary()
+{
+	local status=$(git status -s 2> /dev/null)
+	local unstaged=$(grep '^\([^U][ACDMRTU]\|??\)' -o <<< "$status" | __git_character_at 1 | sort | uniq -c)
+	local staged=$(grep '^[ACDMRTU][^U]' -o <<< "$status" | __git_character_at 0 | sort | uniq -c)
+	local conflicts=$(grep '^UU' -o <<< "$status" | sort | uniq -c)
+
+	if [[ -n $unstaged && -z $staged || -n $conflicts ]] 
+	then
+		printf "  ${__GIT_TS_ICON_CHANGES_UNSTAGED}${__GIT_ICON_CHANGES}${__GIT_TS_CLEAR}"
+	elif [[ -z $unstaged && -n $staged ]] 
+	then
+		printf "  ${__GIT_TS_ICON_CHANGES_STAGED}${__GIT_ICON_CHANGES}${__GIT_TS_CLEAR}"
+	elif [[ -n $unstaged && -n $staged ]]
+	then
+		printf "  ${__GIT_TS_ICON_CHANGES_SOME_STAGED}${__GIT_ICON_CHANGES}${__GIT_TS_CLEAR}"
+	fi
+
+	[[ -n $conflicts ]] && __git_pretty_file_count "${__GIT_TS_CHANGES_CONFLICTS}" "$conflicts"
+	[[ -n $conflicts && -n $unstaged ]] && printf " ${__GIT_ICON_DELIMITER}"
+	[[ -n $unstaged ]] && __git_pretty_file_count "${__GIT_TS_CHANGES_UNSTAGED}" "$unstaged"
+	[[ -n $unstaged && -n $staged ]] && printf " ${__GIT_ICON_DELIMITER}"
+	[[ -n $staged ]] && __git_pretty_file_count "${__GIT_TS_CHANGES_STAGED}" "$staged"
 }
 
