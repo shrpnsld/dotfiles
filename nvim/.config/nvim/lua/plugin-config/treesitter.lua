@@ -11,6 +11,7 @@ treesitter.setup {
 		"lua",
 		"markdown",
 		"python",
+		"swift",
 		"vim",
 		"vimdoc",
 		"xml",

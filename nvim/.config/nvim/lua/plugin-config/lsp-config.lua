@@ -30,6 +30,12 @@ lspconfig.lua_ls.setup {
 	end
 }
 
+lspconfig.sourcekit.setup {
+	on_init = function(client, _)
+		client.server_capabilities.semanticTokensProvider = nil
+	end
+}
+
 lspconfig.pylsp.setup {
 	on_init = function(client, _)
 		client.server_capabilities.semanticTokensProvider = nil
