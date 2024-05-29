@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# NOTE: ineffective hot mess, but it works
+
+TS_CLEAR='\e[0m'
+TS_MONTH_YEAR='\e[0m'
+TS_REGULAR_NAME='\e[34m'
+TS_WEEKEND_NAME='\e[31m'
+TS_WEEKEND='\e[35m'
+TS_TODAY='\e[7m'
+TS_ANOTHER_MONTH='\e[90m'
+
+previous_month_stamp=$1
+calendar=("${@:2}")
+today=$(date '+%d')
+
+output=$(cal -d $previous_month_stamp)
+previous_month=($output)
+
+shopt -s extglob
+month_and_year="${calendar[0]}"
+month_and_year="${month_and_year##*( )}"
+month_and_year="${month_and_year%%*( )}"
+shopt -u extglob
+
+rows=("${calendar[@]:2}")
+first_row=(${rows[0]})
+dates=(${rows[@]})
+
+centering=$(( (21 - ${#month_and_year}) / 2 ))
+printf " %*s${TS_MONTH_YEAR}%s${TS_CLEAR}\n ${TS_REGULAR_NAME}Mo Tu We Th Fr ${TS_WEEKEND_NAME}Sa Su${TS_CLEAR}\n" ${centering} ' ' "$month_and_year"
+
+paddings=$(( 7 - ${#first_row[@]} - 1 ))
+if (( paddings < 0 ))
+then
+	paddings=6
+fi
+
+previous_dates=("${previous_month[@]:${#previous_month[@]}-$paddings:$paddings}")
+if (( ${#previous_dates[@]} > 0 ))
+then
+	printf " ${TS_ANOTHER_MONTH}%s${TS_CLEAR}" "${previous_dates[@]}"
+fi
+
+cell=$paddings
+for (( index = 0; index < ${#dates[@]}; ++index ))
+do
+	printf ' '
+	date=${dates[$index]}
+	if (( date == today ))
+	then
+		printf "${TS_TODAY}"
+	fi
+
+	if (( cell > 4 ))
+	then
+		printf "${TS_WEEKEND}"
+	fi
+
+	printf "%2s${TS_CLEAR}" $date
+
+	if (( cell == 6 )) && (( index < ${#dates[@]} - 1 ))
+	then
+		printf '\n'
+	fi
+
+	cell=$(( (cell + 1) % 7 ))
+done
+
+if (( cell != 0 ))
+then
+	for (( date=1; cell < 7; ++cell, ++date ))
+	do
+		printf " ${TS_ANOTHER_MONTH}%2s" $date
+	done
+fi
+

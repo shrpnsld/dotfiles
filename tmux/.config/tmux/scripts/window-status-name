@@ -23,7 +23,7 @@ print-icon()
 		nc|ncat|netcat|ping|network) printf '󰲝 ' ;; # 󰲝 󱘖
 		nvim) printf ' ' ;; #  
 		python|Python) printf ' ' ;;
-		ranger|mc|nnn|vimfm|files) printf '󰉓 ' ;;
+		ranger|mc|nnn|vifm|yazi|files) printf '󰉓 ' ;;
 		ruby) printf '󰴭 ' ;;
 		sql|sqlite|sqlite3|database) printf '󰆼 ' ;;
 		test|tests) printf '󰢨 ' ;; # 󰢨 󰄹 󰤑 

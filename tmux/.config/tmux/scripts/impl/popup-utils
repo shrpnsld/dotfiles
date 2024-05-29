@@ -1,0 +1,107 @@
+find-widget-start()
+{
+	local delimiter=$1
+	local widget_index=$2
+	local widgets=$3
+
+	local current_widget=0
+	local index
+	for (( index = ${#widgets} - 1; index > 0 ; --index ))
+	do
+		local character="${widgets:$index:1}"
+		if [[ $character == $delimiter ]]
+		then
+			(( ++current_widget ))
+			if [[ $current_widget == $widget_index ]]
+			then
+				break
+			fi
+		fi
+	done
+
+	return $(( index + 1 ))
+}
+
+find-widget-end()
+{
+	local delimiter=$1
+	local widget_index=$2
+	local widgets=$3
+
+	if [[ $widget_index == 1 ]]
+	then
+		return $(( ${#widgets} - 1 ))
+	fi
+
+	local previous_widget_index=$(( widget_index - 1 ))
+	local current_widget=0
+	local index
+	for (( index = ${#widgets} - 1; index > 0 ; --index ))
+	do
+		local character="${widgets:$index:1}"
+		if [[ $character == $delimiter ]]
+		then
+			(( ++current_widget ))
+			if [[ $current_widget == $previous_widget_index ]]
+			then
+				break
+			fi
+		fi
+	done
+
+	return $(( index ))
+}
+
+popup-width()
+{
+	local lines=("$@")
+
+	if (( ${#lines[@]} == 1 ))
+	then
+		local first="${lines[0]}"
+		return $(( ${#first} + 3 ))
+	fi
+
+	local max_length=0
+	local line
+	for line in "${lines[@]}"
+	do
+		local length=${#line}
+		if (( length > max_length ))
+		then
+			max_length=$length
+		fi
+	done
+
+	return $(( max_length + 2 ))
+}
+
+popup-height()
+{
+	local lines=("$@")
+
+	local height=$(( ${#lines[@]} + 2 ))
+	return $height
+}
+
+popup-x()
+{
+	local popup_width=$1
+	local window_width=$2
+	local widget_delimiter=$3
+	local widget_index=$4
+	local widgets=$5
+
+	find-widget-start "$widget_delimiter" $widget_index "$widgets"
+	local widget_start=$?
+
+	local x=$(( window_width - (${#widgets} - widget_start) ))
+	if (( x + popup_width > window_width ))
+	then
+		find-widget-end "$widget_delimiter" $widget_index "$widgets" 
+		local widget_end=$?
+		x=$(( window_width - (${#widgets} - widget_end) - popup_width ))
+	fi
+
+	printf '%s' $x
+}

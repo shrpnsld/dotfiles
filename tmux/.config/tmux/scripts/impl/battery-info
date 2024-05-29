@@ -1,0 +1,94 @@
+#!/bin/bash
+
+POWER_STATE_NOT_CHARGING=1
+POWER_STATE_CHARGING=2
+POWER_STATE_DISCHARGING=3
+power-state()
+{
+	local pmset_output=$1
+
+	state=$(grep --only-matching '\(charging\|discharging\|finishing charge\|charged\|AC attached\);' <<< "$pmset_output")
+	state="${state::${#state}-1}"
+
+	printf '%s' "$state"
+
+	case "$state" in
+		'charging')
+			return $POWER_STATE_CHARGING
+			;;
+
+		'discharging')
+			return $POWER_STATE_DISCHARGING
+			;;
+
+		*)
+			return $POWER_STATE_NOT_CHARGING
+	esac
+}
+
+REMAINING_TIME_OK=0
+REMAINING_TIME_NOT_CHARGING=1
+REMAINING_TIME_NO_ESTIMATE=2
+remaining-time()
+{
+	local pmset_output=$1
+
+	local field=$(tail -n 1 <<< "$pmset_output" | grep ';[^;]*present: true$' --only-matching)
+	field="${field#* }"
+	field="${field% *}"
+	field="${field% *}"
+	case "$field" in
+		'(not charging)')
+			return $REMAINING_TIME_NOT_CHARGING
+			;;
+
+		'(no estimate)')
+			return $REMAINING_TIME_NO_ESTIMATE
+			;;
+
+		*)
+			field="${field% *}"
+			printf '%s' "$field"
+			return $REMAINING_TIME_OK
+			;;
+	esac
+}
+
+output=$(pmset -g batt)
+drawing_from=$(head -n 1 <<< "$output" | grep --only-matching "'.*'")
+state_description=$(power-state "$output")
+state_retval=$?
+remaining_time=$(remaining-time "$output")
+remaining_time_retval=$?
+
+printf ' Drawing from: %s \n State: %s ' "$drawing_from" "$state_description"
+
+case $state_retval in
+	$POWER_STATE_CHARGING)
+		case $remaining_time_retval in
+			$REMAINING_TIME_OK)
+				printf '\n %s until charged ' "$remaining_time"
+				;;
+
+			$REMAINING_TIME_NO_ESTIMATE)
+				printf '\n no estimate for charging time ' "$remaining_time"
+				;;
+		esac
+		;;
+
+	$POWER_STATE_DISCHARGING)
+		case $remaining_time_retval in
+			$REMAINING_TIME_OK)
+				printf '\n %s until discharged ' "$remaining_time"
+				;;
+
+			$REMAINING_TIME_NO_ESTIMATE)
+				printf '\n no estimate for discharging time ' "$remaining_time"
+				;;
+		esac
+		;;
+
+	*)
+		;;
+esac
+

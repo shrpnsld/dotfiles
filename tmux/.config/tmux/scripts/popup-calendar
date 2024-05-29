@@ -1,0 +1,37 @@
+#!/bin/bash
+
+source ~/.config/tmux/scripts/impl/popup-utils
+
+widgets=$1
+widget_index=$2
+
+BORDER_FG=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
+window_width=$(\tmux display-message -p '#{window_width}')
+
+OLD_IFS="$IFS"
+IFS=$'\n'
+lines=($(cal -h))
+IFS="$OLD_IFS"
+
+popup-width "${lines[@]}"; width=$?
+output=$(~/.config/tmux/scripts/impl/calendar $(date -v-1m '+%Y-%m') "${lines[@]}")
+
+OLD_IFS="$IFS"
+IFS=$'\n'
+lines=($(printf "$output"))
+IFS="$OLD_IFS"
+
+widget_delimiter=$(\tmux display-message -p '#{@ICON_DELIMITER}')
+popup-height "${lines[@]}"; height=$?
+x=$(popup-x $width $window_width "$widget_delimiter" $widget_index "$widgets")
+
+\tmux display-popup \
+	-T " #{@ICON_CALENDAR} Calendar "\
+	-b heavy \
+	-S "fg=$BORDER_FG" \
+	-w $width \
+	-h $height \
+	-x $x \
+	-y S \
+	"tput civis && printf \"$output\""
+

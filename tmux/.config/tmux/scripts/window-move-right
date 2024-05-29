@@ -1,0 +1,16 @@
+#!/bin/bash
+
+window_index=$1
+window_count=$2
+
+if (( window_index == window_count ))
+then
+	for (( --window_index ; window_index >= 1; --window_index ))
+	do
+		\tmux swap-window -t $window_index \; select-window -t $window_index
+	done
+else
+	(( ++window_index ))
+	\tmux swap-window -t $window_index \; select-window -t $window_index
+fi
+

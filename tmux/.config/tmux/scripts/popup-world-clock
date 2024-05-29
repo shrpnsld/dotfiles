@@ -1,0 +1,32 @@
+#!/bin/bash
+
+source ~/.config/tmux/scripts/impl/popup-utils
+
+widgets=$1
+widget_index=$2
+
+BORDER_FG=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
+window_width=$(\tmux display-message -p '#{window_width}')
+
+output=$(~/.config/tmux/scripts/impl/world-clock ~/.config/tmux/world-clocks --no-color)
+OLD_IFS="$IFS"
+IFS=$'\n'
+lines=($(printf '%s' "$output"))
+IFS="$OLD_IFS"
+
+widget_delimiter=$(\tmux display-message -p '#{@ICON_DELIMITER}')
+popup-width "${lines[@]}"; width=$?
+popup-height "${lines[@]}"; height=$?
+x=$(popup-x $width $window_width "$widget_delimiter" $widget_index "$widgets")
+output=$(~/.config/tmux/scripts/impl/world-clock ~/.config/tmux/world-clocks)
+
+\tmux display-popup \
+	-T " #{@ICON_CLOCK} World Clock "\
+	-b heavy \
+	-S "fg=$BORDER_FG" \
+	-w $width \
+	-h $height \
+	-x $x \
+	-y S \
+	"tput civis && printf \"$output\""
+

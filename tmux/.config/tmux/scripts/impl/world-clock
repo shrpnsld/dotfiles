@@ -1,0 +1,95 @@
+#!/bin/bash
+
+if [[ $2 != '--no-color' ]]
+then
+	TS_SUNRIZE='\e[33m'
+	TS_MORNING='\e[33m'
+	TS_DAY='\e[0m'
+	TS_EVENING='\e[35m'
+	TS_SUNSET='\e[35m'
+	TS_NIGHT='\e[34m'
+	TS_CLEAR='\e[0m'
+fi
+
+clocks=$1
+
+print-city-date-time()
+{
+	local name=$1
+	local name_width=$2
+	local zone=$3
+
+	printf "%${name_width}s  " "$name"
+
+	local hour=$(TZ=$zone date '+%H')
+	if (( hour >= 5 && hour <= 7 ))
+	then
+		printf "${TS_SUNRIZE}${TS_CLEAR}"
+	elif (( hour >= 8 && hour <= 11 ))
+	then
+		printf "${TS_MORNING}${TS_CLEAR}"
+	elif (( hour >= 12 && hour <= 15 ))
+	then
+		printf "${TS_DAY}${TS_CLEAR}"
+	elif (( hour >= 16 && hour <= 18 ))
+	then
+		printf "${TS_EVENING}${TS_CLEAR}"
+	elif (( hour >= 19 && hour <= 21 ))
+	then
+		printf "${TS_SUNSET}${TS_CLEAR}"
+	else
+		printf "${TS_NIGHT}󰖔${TS_CLEAR}"
+	fi
+
+	printf '%s' "$(TZ=$zone date '+ %H:%M  %a %B %-e')"
+}
+
+pad()
+{
+	printf '%*s' 1 ' '
+}
+
+zones=()
+names=()
+city_field_width=0
+output=$(cat "$clocks")
+if [[ $? == 1 || -z $output ]]
+then
+	pad
+	printf '[no clocks set up]'
+	exit
+fi
+
+while read line
+do
+	if [[ -z $line ]]
+	then
+		continue
+	fi
+
+	zone="${line%% *}"
+	name="${line#$zone}"
+
+	shopt -s extglob
+	name="${name##*( )}"
+	name="${name%%*( )}"
+	shopt -u extglob
+
+	names+=("$name")
+	zones+=("$zone")
+
+	name_length=${#name}
+	if (( name_length > city_field_width ))
+	then
+		city_field_width=$name_length
+	fi
+done <<< "$output"
+
+for (( index = 0; index < ${#names[@]} - 1; ++index ))
+do
+	pad; print-city-date-time "${names[$index]}" $city_field_width "${zones[$index]}"; pad
+	printf '\n'
+done
+
+pad; print-city-date-time "${names[$index]}" $city_field_width "${zones[$index]}"
+

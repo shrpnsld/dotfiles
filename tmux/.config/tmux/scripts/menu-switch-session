@@ -24,16 +24,6 @@ do
 	(( ++index ))
 done
 
-\tmux set-option -g status-left "\
- #[fg=#{@CS_STATUS_SELECTED_FG},bg=#{@CS_STATUS_SELECTED_BG},bold]\
- #{@ICON_SESSION} #S \
-#[fg=#{@CS_STATUS_FG},bg=#{@CS_STATUS_BG}] #{@ICON_DELIMITER} "
-
-\tmux set-option -w -g window-status-current-format "\
-#[fg=#{@CS_STATUS_SELECTED_INACTIVE_FG},bg=#{@CS_STATUS_SELECTED_INACTIVE_BG},bold]\
- #(~/.config/tmux/auto-window-name #{pane_current_command} '#{pane_current_path}' #{window_name}) \
-#[fg=default,bg=defult]"
-
 \tmux display-menu \
 	-T " #{@ICON_SWITCH_SESSION} Switch session " \
 	-x 1 \
@@ -42,11 +32,4 @@ done
 	-S "fg=$BORDER_FG" \
 	-H "fg=$SELECTED_FG,bg=$SELECTED_BG" \
 	-C $selected "${menu_items[@]}"
-
-\tmux set-option -g status-left "  #{@ICON_SESSION} #S  #{@ICON_DELIMITER} "
-
-\tmux set-option -w -g window-status-current-format "\
-#[fg=#{@CS_STATUS_SELECTED_FG},bg=#{@CS_STATUS_SELECTED_BG},bold]\
- #(~/.config/tmux/auto-window-name #{pane_current_command} '#{pane_current_path}' #{window_name}) \
-#[fg=default,bg=defult]"
 
