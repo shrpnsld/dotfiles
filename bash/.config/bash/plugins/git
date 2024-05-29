@@ -24,7 +24,7 @@ __git_pretty_status()
 #
 # Private
 
-__GIT_PRETTY_STATUS_ON=1
+__GIT_PRETTY_STATUS_ON=0
 
 __GIT_ICON='󰊢'
 __GIT_ICON_MERGE=''
@@ -93,7 +93,7 @@ __git_status()
 
 	if [[ -f "$git_dir/MERGE_HEAD" ]]
 	then
-		__GIT_STATUS_RETURN__FROM=$(git name-rev --name-only $(cat "$git_dir/MERGE_HEAD"))
+		__GIT_STATUS_RETURN__FROM=$(git name-rev --name-only "$(cat "$git_dir/MERGE_HEAD")")
 		__GIT_STATUS_RETURN__TO=$(__git_head)
 		return $__GIT_STATUS_MERGE
 	elif [[ -d "$git_dir/rebase-merge" ]]
@@ -103,7 +103,7 @@ __git_status()
 		local message=$(__git_message "$hash")
 
 		__GIT_STATUS_RETURN__FROM=$(printf "$name ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}")
-		__GIT_STATUS_RETURN__TO=$(git name-rev --name-only $(cat "$git_dir/rebase-merge/onto"))
+		__GIT_STATUS_RETURN__TO=$(git name-rev --name-only "$(cat "$git_dir/rebase-merge/onto")")
 		return $__GIT_STATUS_REBASE
 	elif [[ -d "$git_dir/rebase-apply" ]]
 	then
@@ -112,7 +112,7 @@ __git_status()
 		local message=$(__git_message "$hash")
 
 		__GIT_STATUS_RETURN__FROM=$(printf "$name ${__GIT_TS_MESSAGE}\"$message\"${__GIT_TS_CLEAR}")
-		__GIT_STATUS_RETURN__TO=$(git name-rev --name-only $(cat "$git_dir/HEAD"))
+		__GIT_STATUS_RETURN__TO=$(git name-rev --name-only "$(cat "$git_dir/HEAD")")
 		return $__GIT_STATUS_REBASE
 	elif [[ -f "$git_dir/CHERRY_PICK_HEAD" ]]
 	then

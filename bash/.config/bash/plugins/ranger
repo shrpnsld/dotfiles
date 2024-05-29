@@ -1,4 +1,4 @@
-function ranger()
+ranger()
 {
 	local IFS=$'\t\n'
 	local temp_file="$(mktemp -t tmp.XXXXXX)"
