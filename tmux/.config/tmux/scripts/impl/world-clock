@@ -21,7 +21,7 @@ print-city-date-time()
 
 	printf "%${name_width}s  " "$name"
 
-	local hour=$(TZ=$zone date '+%H')
+	local hour=$(TZ=$zone date '+%-H')
 	if (( hour >= 5 && hour <= 7 ))
 	then
 		printf "${TS_SUNRIZE}${TS_CLEAR}"
@@ -41,7 +41,7 @@ print-city-date-time()
 		printf "${TS_NIGHT}󰖔${TS_CLEAR}"
 	fi
 
-	printf '%s' "$(TZ=$zone date '+ %H:%M  %a %B %-e')"
+	printf '%s' "$(TZ=$zone date '+ %_H:%M  %a %B %-e')"
 }
 
 pad()

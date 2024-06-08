@@ -12,7 +12,7 @@ TS_ANOTHER_MONTH='\e[90m'
 
 previous_month_stamp=$1
 calendar=("${@:2}")
-today=$(date '+%d')
+today=$(date '+%-d')
 
 output=$(cal -d $previous_month_stamp)
 previous_month=($output)
