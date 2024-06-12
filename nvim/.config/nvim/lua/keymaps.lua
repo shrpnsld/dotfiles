@@ -87,8 +87,8 @@ vim.keymap.set("", "<Leader>q", "<Cmd>quit<CR>", { silent = true, desc = "Quit b
 vim.keymap.set("", "<Leader>p", "<Cmd>pclose<CR>", { silent = true, desc = "Close preview" })
 
 -- neo-tree
-vim.keymap.set("", "<Leader>,", "<Cmd>Neotree toggle position=left action=show<CR>", { silent = true, desc = "Toggle file tree on the left" })
-vim.keymap.set("", "<Leader><", "<Cmd>Neotree position=left action=focus<CR>", { silent = true, desc = "Show file tree on the left and switch focus to it" })
+vim.keymap.set("", "<Leader>,", "<Cmd>Neotree position=left action=focus<CR>", { silent = true, desc = "Show file tree on the left and switch focus to it" })
+vim.keymap.set("", "<Leader><", "<Cmd>Neotree toggle position=left action=show<CR>", { silent = true, desc = "Toggle file tree on the left" })
 vim.keymap.set("", "<Leader>.", "<Cmd>Neotree position=float<CR>", { silent = true, desc = "Show file tree in the floating window" })
 vim.keymap.set("", "<Leader><Tab>.", "<Cmd>tabnew | Neotree position=float<CR>", { silent = true, desc = "Open file tree in the floating window in a tab behind current one" })
 vim.keymap.set("", "<Leader><S-Tab>.", "<Cmd>-tabnew | Neotree position=float<CR>", { silent = true, desc = "Open file tree in the floating window in a tab before current one" })
