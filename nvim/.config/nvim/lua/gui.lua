@@ -2,7 +2,15 @@
 -- Utils
 
 function get_highlight(name)
-	local highlight = vim.api.nvim_get_hl(0, { name = name })
+	local highlight
+	while true do
+		highlight = vim.api.nvim_get_hl(0, { name = name })
+		if highlight.link == nil then
+			break
+		end
+
+		name = highlight.link
+	end
 
 	if highlight.reverse then
 		highlight.fg, highlight.bg, highlight.ctermfg, highlight.ctermbg = highlight.bg, highlight.fg, highlight.ctermbg, highlight.ctermfg
@@ -30,6 +38,10 @@ end
 function correct_status_line_highlights()
 	vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "StatusLineNC", {}) -- single character under split line, when right-side window is active
+
+	-- neo-tree
+	vim.api.nvim_set_hl(0, "NeoTreeStatusLineNC", {})
+	vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { link = "StatusLine" })
 end
 
 function correct_tab_line_fill_highlights()
