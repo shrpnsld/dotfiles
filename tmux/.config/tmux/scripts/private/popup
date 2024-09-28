@@ -1,7 +1,7 @@
 #
 # Public
 
-popup-display-info()
+popup-display-static()
 {
 	local title=$1
 	local width=$2
@@ -12,7 +12,7 @@ popup-display-info()
 	local border_fg=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
 
 	\tmux display-popup \
-		-T "$title" \
+		-T " $title " \
 		-b heavy \
 		-S "fg=$border_fg" \
 		-w "$width" \

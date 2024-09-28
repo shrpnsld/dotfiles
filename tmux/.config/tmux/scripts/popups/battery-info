@@ -15,5 +15,5 @@ widget_delimiter=$(\tmux display-message -p '#{@ICON_DELIMITER}')
 popup-configuration $window_width "$widgets" $widget_index "$widget_delimiter" 1 "${lines[@]}"
 content=$(popup-pad-content 1 "${lines[@]}")
 
-popup-display-info " #{@ICON_BATTERY} Battery " $POPUP_CONFIGURATION_RETURN__WIDTH $POPUP_CONFIGURATION_RETURN__HEIGHT $POPUP_CONFIGURATION_RETURN__X "$content"
+popup-display-static "#{@ICON_BATTERY} Battery" $POPUP_CONFIGURATION_RETURN__WIDTH $POPUP_CONFIGURATION_RETURN__HEIGHT $POPUP_CONFIGURATION_RETURN__X "$content"
 
