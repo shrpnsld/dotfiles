@@ -61,17 +61,17 @@ state_retval=$?
 remaining_time=$(remaining-time "$output")
 remaining_time_retval=$?
 
-printf ' Drawing from: %s \n State: %s ' "$drawing_from" "$state_description"
+printf 'Drawing from: %s\nState: %s\n' "$drawing_from" "$state_description"
 
 case $state_retval in
 	$POWER_STATE_CHARGING)
 		case $remaining_time_retval in
 			$REMAINING_TIME_OK)
-				printf '\n %s until charged ' "$remaining_time"
+				printf '%s until charged\n' "$remaining_time"
 				;;
 
 			$REMAINING_TIME_NO_ESTIMATE)
-				printf '\n no estimate for charging time ' "$remaining_time"
+				printf 'no estimate for charging time\n' "$remaining_time"
 				;;
 		esac
 		;;
@@ -79,11 +79,11 @@ case $state_retval in
 	$POWER_STATE_DISCHARGING)
 		case $remaining_time_retval in
 			$REMAINING_TIME_OK)
-				printf '\n %s until discharged ' "$remaining_time"
+				printf '%s until discharged\n' "$remaining_time"
 				;;
 
 			$REMAINING_TIME_NO_ESTIMATE)
-				printf '\n no estimate for discharging time ' "$remaining_time"
+				printf 'no estimate for discharging time\n' "$remaining_time"
 				;;
 		esac
 		;;

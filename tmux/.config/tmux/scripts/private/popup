@@ -1,0 +1,165 @@
+#
+# Public
+
+popup-display-info()
+{
+	local title=$1
+	local width=$2
+	local height=$3
+	local x=$4
+	local content=$5
+
+	local border_fg=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
+
+	\tmux display-popup \
+		-T "$title" \
+		-b heavy \
+		-S "fg=$border_fg" \
+		-w "$width" \
+		-h "$height" \
+		-x "$x" \
+		-y S \
+		"tput civis && printf \"$content\""
+}
+
+POPUP_CONFIGURATION_RETURN__X=0
+POPUP_CONFIGURATION_RETURN__WIDTH=0
+POPUP_CONFIGURATION_RETURN__HEIGHT=0
+popup-configuration()
+{
+	local window_width=$1
+	local widgets=$2
+	local widget_index=$3
+	local widget_delimiter=$4
+	local padding_width=$5
+	local lines=("${@:6}")
+
+	POPUP_CONFIGURATION_RETURN__X=0
+	POPUP_CONFIGURATION_RETURN__WIDTH=0
+	POPUP_CONFIGURATION_RETURN__HEIGHT=0
+
+	popup-private--content-width "${lines[@]}"; POPUP_CONFIGURATION_RETURN__WIDTH=$(( $? + 2 * padding_width + 2 )) # +2 for popup borders
+	popup-private--content-height ${#lines[@]}; POPUP_CONFIGURATION_RETURN__HEIGHT=$(( $? + 2 )) # +2 for popup borders
+	POPUP_CONFIGURATION_RETURN__X=$(popup-private--x $POPUP_CONFIGURATION_RETURN__WIDTH $window_width "$widgets" "$widget_delimiter" $widget_index)
+}
+
+popup-pad-content()
+{
+	local padding_width=$1
+	local lines=("${@:2}")
+
+	local padding=$(printf '%*s' $padding_width ' ')
+	printf "$padding%s$padding\n" "${lines[@]}"
+}
+
+#
+# Private
+
+popup-private--content-width()
+{
+	local lines=("$@")
+
+	if (( ${#lines[@]} == 1 ))
+	then
+		local first="${lines[0]}"
+		return $(( ${#first} + 3 ))
+	fi
+
+	local max_length=0
+	local line
+	for line in "${lines[@]}"
+	do
+		local length=${#line}
+		if (( length > max_length ))
+		then
+			max_length=$length
+		fi
+	done
+
+	return $(( max_length ))
+}
+
+popup-private--content-height()
+{
+	local content_line_count=$1
+
+	local height=$(( content_line_count ))
+	return $height
+}
+
+popup-private--x()
+{
+	local popup_width=$1
+	local window_width=$2
+	local widgets=$3
+	local widget_delimiter=$4
+	local widget_index=$5
+
+	popup-private--find-widget-start "$widget_delimiter" $widget_index "$widgets"
+	local widget_start=$?
+
+	local x=$(( window_width - (${#widgets} - widget_start) ))
+	if (( x + popup_width > window_width ))
+	then
+		popup-private--find-widget-end "$widget_delimiter" $widget_index "$widgets"
+		local widget_end=$?
+		x=$(( window_width - (${#widgets} - widget_end) - popup_width ))
+	fi
+
+	printf '%s' $x
+}
+
+popup-private--find-widget-start()
+{
+	local delimiter=$1
+	local widget_index=$2
+	local widgets=$3
+
+	local current_widget=0
+	local index
+	for (( index = ${#widgets} - 1; index > 0 ; --index ))
+	do
+		local character="${widgets:$index:1}"
+		if [[ $character == $delimiter ]]
+		then
+			(( ++current_widget ))
+			if [[ $current_widget == $widget_index ]]
+			then
+				break
+			fi
+		fi
+	done
+
+	return $(( index + 1 ))
+}
+
+popup-private--find-widget-end()
+{
+	local delimiter=$1
+	local widget_index=$2
+	local widgets=$3
+
+	if [[ $widget_index == 1 ]]
+	then
+		return $(( ${#widgets} - 1 ))
+	fi
+
+	local previous_widget_index=$(( widget_index - 1 ))
+	local current_widget=0
+	local index
+	for (( index = ${#widgets} - 1; index > 0 ; --index ))
+	do
+		local character="${widgets:$index:1}"
+		if [[ $character == $delimiter ]]
+		then
+			(( ++current_widget ))
+			if [[ $current_widget == $previous_widget_index ]]
+			then
+				break
+			fi
+		fi
+	done
+
+	return $(( index ))
+}
+

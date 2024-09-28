@@ -1,31 +1,19 @@
 #!/bin/bash
 
-source ~/.config/tmux/scripts/private/popup-utils
+source ~/.config/tmux/scripts/private/popup
 
 widgets=$1
 widget_index=$2
 
-BORDER_FG=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
-window_width=$(\tmux display-message -p '#{window_width}')
-
-output=$(~/.config/tmux/scripts/private/battery-info)
 OLD_IFS="$IFS"
 IFS=$'\n'
-lines=($(printf '%s' "$output"))
+lines=($(~/.config/tmux/scripts/private/battery-info))
 IFS="$OLD_IFS"
 
+window_width=$(\tmux display-message -p '#{window_width}')
 widget_delimiter=$(\tmux display-message -p '#{@ICON_DELIMITER}')
-popup-width "${lines[@]}"; width=$?
-popup-height "${lines[@]}"; height=$?
-x=$(popup-x $width $window_width "$widget_delimiter" $widget_index "$widgets")
+popup-configuration $window_width "$widgets" $widget_index "$widget_delimiter" 1 "${lines[@]}"
+content=$(popup-pad-content 1 "${lines[@]}")
 
-\tmux display-popup \
-	-T " #{@ICON_BATTERY} Battery "\
-	-b heavy \
-	-S "fg=$BORDER_FG" \
-	-w $width \
-	-h $height \
-	-x $x \
-	-y S \
-	"tput civis && printf \"$output\""
+popup-display-info " #{@ICON_BATTERY} Battery " $POPUP_CONFIGURATION_RETURN__WIDTH $POPUP_CONFIGURATION_RETURN__HEIGHT $POPUP_CONFIGURATION_RETURN__X "$content"
 

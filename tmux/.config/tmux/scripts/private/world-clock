@@ -44,18 +44,12 @@ print-city-date-time()
 	printf '%s' "$(TZ=$zone date '+ %_H:%M  %a %B %-e')"
 }
 
-pad()
-{
-	printf '%*s' 1 ' '
-}
-
 zones=()
 names=()
 city_field_width=0
 output=$(cat "$clocks")
 if [[ $? == 1 || -z $output ]]
 then
-	pad
 	printf '[no clocks set up]'
 	exit
 fi
@@ -85,11 +79,10 @@ do
 	fi
 done <<< "$output"
 
-for (( index = 0; index < ${#names[@]} - 1; ++index ))
+for (( index = 0; index < ${#names[@]}; ++index ))
 do
-	pad; print-city-date-time "${names[$index]}" $city_field_width "${zones[$index]}"; pad
+	print-city-date-time "${names[$index]}" $city_field_width "${zones[$index]}"
 	printf '\n'
 done
 
-pad; print-city-date-time "${names[$index]}" $city_field_width "${zones[$index]}"
 
