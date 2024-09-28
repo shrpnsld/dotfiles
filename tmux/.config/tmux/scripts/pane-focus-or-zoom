@@ -2,15 +2,18 @@
 
 target_pane=$1
 
+pane_count=$(\tmux display-message -p '#{window_panes}')
+if [[ $target_pane > $pane_count ]]
+then
+	exit
+fi
+
 current_pane=$(\tmux display-message -p '#{pane_index}')
 if [[ $current_pane != $target_pane ]]
 then
 	\tmux select-pane -t $target_pane
 else
 	zoomed=$(\tmux display-message -p '#{window_zoomed_flag}')
-	if [[ $zoomed == 0 ]]
-	then
-		\tmux resize-pane -Z
-	fi
+	\tmux resize-pane -Z
 fi
 
