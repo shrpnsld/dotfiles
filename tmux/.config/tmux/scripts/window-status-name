@@ -14,7 +14,7 @@ print-icon()
 		cmake|ccmake|make|ninja) printf ' ' ;; # 󱁤
 		dev|development) printf '󱁤 ' ;;
 		gcc|cpp) printf '󰙲 ' ;;
-		gdb) printf ' ' ;; # 󱁤 
+		gdb|dbg|debug) printf ' ' ;; # 󱁤 
 		ghc*) printf ' ' ;;
 		git|lazygit) printf '󰊢 ' ;; # 󰊢  
 		htop|top) printf '󰑮 ' ;; #  󰑮
