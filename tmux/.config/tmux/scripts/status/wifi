@@ -1,0 +1,47 @@
+#!/bin/bash
+
+source ~/.config/tmux/scripts/private/network
+source ~/.config/tmux/scripts/private/wifi
+
+readonly ICON_CONNECTED_ONLINE='󰖩'
+readonly ICON_CONNECTED_OFFLINE='󱈸󰖩'
+readonly ICON_NOT_CONNECTED='󰤯'
+readonly ICON_OFF='󰤮'
+readonly ICON_ERROR=' 󰖩'
+
+local interface
+interface=$(wifi-interface)
+if [[ $? != 0 ]]
+then
+	printf '%s' "$ICON_ERROR"
+	exit
+fi
+
+local power
+power=$(wifi-power "$interface")
+if [[ $? != 0 ]]
+then
+	printf '%s' "$ICON_ERROR"
+	exit
+fi
+
+if [[ $power == 'Off' ]]
+then
+	printf '%s' "$ICON_OFF"
+	exit
+fi
+
+if ! network-interface-status "$interface"
+then
+	printf '%s' "$ICON_NOT_CONNECTED"
+	exit
+fi
+
+if ! ~/.config/tmux/scripts/private/internet-reachable
+then
+	printf '%s' "$ICON_CONNECTED_OFFLINE"
+	exit
+fi
+
+printf '%s' "$ICON_CONNECTED_ONLINE"
+
