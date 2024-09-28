@@ -1,0 +1,52 @@
+exec-and-cache-output()
+{
+	local cache_path=$1
+	local refresh_rate=$2
+	local command=("${@:3}")
+
+	local last_modified
+	last_modified=$(date -r "$cache_path" +%s)
+	if [[ $? != 0 ]]
+	then
+		{ "${command[@]}"; } &> "$cache_path"
+		last_modified=$(date -r "$cache_path" +%s)
+	fi
+
+	local now=$(date +%s)
+	local passed=$(( now - last_modified ))
+	if (( $passed >= $refresh_rate ))
+	then
+		{ "${command[@]}"; } &> "$cache_path"
+	fi
+
+	cat "$cache_path"
+}
+
+exec-and-cache-retval()
+{
+	local cache_path=$1
+	local refresh_rate=$2
+	local command=("${@:3}")
+
+	local last_modified
+	last_modified=$(date -r "$cache_path" +%s)
+	if [[ $? != 0 ]]
+	then
+		"${command[@]}" > /dev/null
+		printf $? > "$cache_path"
+		last_modified=$(date -r "$cache_path" +%s)
+	fi
+
+	local now=$(date +%s)
+	local passed=$(( now - last_modified ))
+	if (( $passed >= $refresh_rate ))
+	then
+		"${command[@]}" > /dev/null
+		printf $? > "$cache_path"
+	fi
+
+	local retval
+	retval=$(cat "$cache_path")
+	return $retval
+}
+

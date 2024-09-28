@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/.config/tmux/scripts/private/exec-and-cache
+
 CACHE_PATH="${0%/*}/.battery-status-cache"
 CACHE_REFRESH_RATE=60 # in seconds
 
@@ -15,30 +17,17 @@ finishing_charge_stages=(' 󱐋' ' 󱐋' ' 󱐋' ' 󱐋'
      ac_attached_stages=(' '  ' '  ' '  ' '  ' ')
      discharging_stages=(' '   ' '   ' '   ' '   ' ')
 
-function cache-battery-status()
+function battery-status()
 {
 	local output=$(pmset -g batt)
 	local percentage=$(grep --only-matching '[0-9]\{1,3\}%' <<< "$output")
 	percentage="${percentage%\%}"
 	local state=$(grep --only-matching '\(charging\|discharging\|finishing charge\|charged\|AC attached\);' <<< "$output")
 	state=${state%;}
-	printf '%s|%s' "$percentage" "$state" > "$CACHE_PATH"
+	printf '%s|%s' "$percentage" "$state"
 }
 
-last_modified=$(date -r "$CACHE_PATH" +%s)
-if [ $? != 0 ] && ! [ -r "$CACHE_PATH" ]
-then
-	cache-battery-status
-fi
-
-now=$(date +%s)
-passed=$(( now - last_modified ))
-if [[ $passed -ge $CACHE_REFRESH_RATE ]]
-then
-	cache-battery-status
-fi
-
-battery_state=$(cat "$CACHE_PATH")
+battery_state=$(exec-and-cache-output "$CACHE_PATH" $CACHE_REFRESH_RATE battery-status)
 percentage="${battery_state%|*}"
 state="${battery_state#*|}"
 
