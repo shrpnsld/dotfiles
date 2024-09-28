@@ -1,0 +1,42 @@
+network-current-interface()
+{
+	local output
+	output=$(route -n get default | grep '^[[:space:]]*interface: .*$')
+	if [[ $? != 0 ]]
+	then
+		return 1
+	fi
+
+	printf '%s' "${output##* }"
+}
+
+network-hardware-port()
+{
+	local interface=$1
+
+	local output
+	output=$(networksetup -listallhardwareports | grep -B 1 "^Device: $interface\$" | head -n 1)
+	if [[ $? != 0 ]]
+	then
+		printf '%s' "$output"
+		return 1
+	fi
+
+	printf '%s' "${output#Hardware Port: }"
+}
+
+network-interface-status()
+{
+	local interface=$1
+
+	local output
+	output=$(ifconfig "$interface" | grep '^[[:space:]]*status: .*$')
+	if [[ $? != 0 ]]
+	then
+		return
+	fi
+
+	output="${output##*status: }"
+	[[ $output == 'active' ]]
+}
+

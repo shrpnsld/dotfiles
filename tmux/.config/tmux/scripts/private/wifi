@@ -1,0 +1,26 @@
+wifi-interface()
+{
+	local output
+	output=$(networksetup -listallhardwareports | grep -A 1 '^Hardware Port: Wi-Fi$' | tail -n 1)
+	if [[ $? != 0 ]]
+	then
+		return 1
+	fi
+
+	printf '%s' "${output#Device: }"
+}
+
+wifi-power()
+{
+	local interface=$1
+
+	local output
+	output=$(networksetup -getairportpower "$interface" | grep '^Wi-Fi Power \(.\+\): .\+$')
+	if [[ $? != 0 ]]
+	then
+		return 1
+	fi
+
+	printf '%s' "${output#Wi-Fi Power (*): }"
+}
+

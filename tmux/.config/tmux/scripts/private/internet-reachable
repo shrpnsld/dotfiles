@@ -1,0 +1,80 @@
+#!/bin/bash
+
+source ~/.config/tmux/scripts/private/exec-and-cache
+
+REFRESH_RATE=5
+CURRENT_HOST_INDEX_PATH='/tmp/tmux-internet-reachable-host-index'
+
+hosts=(
+	'https://2ip.io/'
+	'https://api.ipify.org?format=json'
+	'https://extreme-ip-lookup.com/json'
+	'https://icanhazip.com'
+	'https://ident.me'
+	'https://ifconfig.co/ip'
+	'https://ifconfig.me/ip'
+	'https://infobyip.com'
+	'https://ip.me'
+	'https://ip.sb'
+	'https://ipaddress.my'
+	'https://ipapi.co/ip'
+	'https://ipburger.com/ip/'
+	'https://ipecho.net/plain'
+	'https://ipinfo.io/ip'
+	'https://ipleak.net'
+	'https://iplocation.io/what-is-my-ip-address'
+	'https://ipwho.is'
+	'https://myexternalip.com/raw'
+	'https://myip.com'
+	'https://myip.dnsomatic.com'
+	'https://showmyip.com/'
+	'https://tracemyip.org'
+	'https://trackip.net/ip'
+	'https://whatismybrowser.com/detect/ip-address-location/'
+	'https://whatismyip.live'
+	'https://whatismyip.net'
+	'https://whatismyipaddress.com'
+	'https://whatismypublicip.com'
+	'https://whatsmyip.com'
+	'https://whoer.net'
+	'https://wtfismyip.com/json'
+)
+
+iteration()
+{
+	local host_index
+	if [[ ! -r "$CURRENT_HOST_INDEX_PATH" ]]
+	then
+		printf '0' > "$CURRENT_HOST_INDEX_PATH"
+	fi
+
+	host_index=$(cat "$CURRENT_HOST_INDEX_PATH")
+
+	local index
+	for (( index = host_index; index < ${#hosts[@]}; ++index ))
+	do
+		local host="${hosts[$index]}"
+		if curl -s -I --connect-timeout $REFRESH_RATE "$host"
+		then
+			index=$(( (index + 1) % ${#hosts[@]} ))
+			printf '%d' $index > "$CURRENT_HOST_INDEX_PATH"
+			return
+		fi
+	done
+
+	for (( index = 0; index <= host_index; ++index ))
+	do
+		local host="${hosts[$index]}"
+		if curl -s -I --connect-timeout $REFRESH_RATE "$host"
+		then
+			index=$(( (index + 1) % ${#hosts[@]} ))
+			printf '%d' $index > "$CURRENT_HOST_INDEX_PATH"
+			return
+		fi
+	done
+
+	return 1
+}
+
+exec-and-cache-retval '/tmp/tmux-internet-reachable-cache' $REFRESH_RATE iteration
+
