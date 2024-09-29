@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source ~/.config/tmux/scripts/private/popup
+
+widgets=$1
+widget_index=$2
+
+window_width=$(\tmux display-message -p '#{window_width}')
+widget_delimiter=$(\tmux display-message -p '#{@ICON_DELIMITER}')
+width=60
+x=$(popup-x $width $window_width "$widgets" "$widget_delimiter" $widget_index)
+popup-display-dynamic "󰆍 top" $width 22 $x top -stats pid,command,cpu,mem,threads -n 10
+
