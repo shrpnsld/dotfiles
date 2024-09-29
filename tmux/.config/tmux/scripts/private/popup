@@ -22,6 +22,28 @@ popup-display-static()
 		"tput civis && printf \"$content\""
 }
 
+popup-display-dynamic()
+{
+	local title=$1
+	local width=$2
+	local height=$3
+	local x=$4
+	local command=("${@:5}")
+
+	local border_fg=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
+
+	\tmux display-popup \
+		-T " $title " \
+		-b heavy \
+		-d '#{pane_current_path}' \
+		-S "fg=$border_fg" \
+		-w "$width" \
+		-h "$height" \
+		-x "$x" \
+		-y S \
+		-E "${command[@]}"
+}
+
 POPUP_CONFIGURATION_RETURN__X=0
 POPUP_CONFIGURATION_RETURN__WIDTH=0
 POPUP_CONFIGURATION_RETURN__HEIGHT=0
@@ -40,7 +62,29 @@ popup-configuration()
 
 	popup-private--content-width "${lines[@]}"; POPUP_CONFIGURATION_RETURN__WIDTH=$(( $? + 2 * padding_width + 2 )) # +2 for popup borders
 	popup-private--content-height ${#lines[@]}; POPUP_CONFIGURATION_RETURN__HEIGHT=$(( $? + 2 )) # +2 for popup borders
-	POPUP_CONFIGURATION_RETURN__X=$(popup-private--x $POPUP_CONFIGURATION_RETURN__WIDTH $window_width "$widgets" "$widget_delimiter" $widget_index)
+	POPUP_CONFIGURATION_RETURN__X=$(popup-x $POPUP_CONFIGURATION_RETURN__WIDTH $window_width "$widgets" "$widget_delimiter" $widget_index)
+}
+
+popup-x()
+{
+	local popup_width=$1
+	local window_width=$2
+	local widgets=$3
+	local widget_delimiter=$4
+	local widget_index=$5
+
+	popup-private--find-widget-start "$widget_delimiter" $widget_index "$widgets"
+	local widget_start=$?
+
+	local x=$(( window_width - (${#widgets} - widget_start) ))
+	if (( x + popup_width > window_width ))
+	then
+		popup-private--find-widget-end "$widget_delimiter" $widget_index "$widgets"
+		local widget_end=$?
+		x=$(( window_width - (${#widgets} - widget_end) - popup_width ))
+	fi
+
+	printf '%s' $x
 }
 
 popup-pad-content()
@@ -85,28 +129,6 @@ popup-private--content-height()
 
 	local height=$(( content_line_count ))
 	return $height
-}
-
-popup-private--x()
-{
-	local popup_width=$1
-	local window_width=$2
-	local widgets=$3
-	local widget_delimiter=$4
-	local widget_index=$5
-
-	popup-private--find-widget-start "$widget_delimiter" $widget_index "$widgets"
-	local widget_start=$?
-
-	local x=$(( window_width - (${#widgets} - widget_start) ))
-	if (( x + popup_width > window_width ))
-	then
-		popup-private--find-widget-end "$widget_delimiter" $widget_index "$widgets"
-		local widget_end=$?
-		x=$(( window_width - (${#widgets} - widget_end) - popup_width ))
-	fi
-
-	printf '%s' $x
 }
 
 popup-private--find-widget-start()
