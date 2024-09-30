@@ -14,7 +14,7 @@ for session in "${sessions[@]}"
 do
 	if [[ $session == $attached_session ]]
 	then
-		item="#{@ICON_CURRENT_SESSION}$session"
+		item="󰇄 $session"
 		selected=$(( index - 1 ))
 	else
 		item="  $session"
@@ -25,7 +25,7 @@ do
 done
 
 \tmux display-menu \
-	-T " #{@ICON_SWITCH_SESSION} Switch session " \
+	-T "  Switch session " \
 	-x 1 \
 	-y S \
 	-b heavy \

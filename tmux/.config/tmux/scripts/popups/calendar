@@ -15,5 +15,5 @@ window_width=$(\tmux display-message -p '#{window_width}')
 widget_delimiter=$(\tmux display-message -p '#{@ICON_DELIMITER}')
 popup-configuration $window_width "$widgets" $widget_index "$widget_delimiter" 0 "${lines[@]}"
 
-popup-display-static "#{@ICON_CALENDAR} Calendar" $POPUP_CONFIGURATION_RETURN__WIDTH $POPUP_CONFIGURATION_RETURN__HEIGHT $POPUP_CONFIGURATION_RETURN__X "$content"
+popup-display-static "󰃭 Calendar" $POPUP_CONFIGURATION_RETURN__WIDTH $POPUP_CONFIGURATION_RETURN__HEIGHT $POPUP_CONFIGURATION_RETURN__X "$content"
 
