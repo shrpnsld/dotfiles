@@ -92,7 +92,8 @@ popup-pad-content()
 	local padding_width=$1
 	local lines=("${@:2}")
 
-	local padding=$(printf '%*s' $padding_width ' ')
+	local padding
+	printf -v padding '%*s' $padding_width ' '
 	printf "$padding%s$padding\n" "${lines[@]}"
 }
 
