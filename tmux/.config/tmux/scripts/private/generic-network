@@ -1,0 +1,10 @@
+readonly ICON_WIFI='󰖩'
+readonly ICON_ETHERNET='󰈀'
+readonly ICON_GENERIC_NETWORK='󰛳'
+readonly ICON_NO_NETWORK='󰲜' # 󰲛
+
+readonly ICON_GENERIC_CONNECTED_ONLINE='󰛳'
+readonly ICON_GENERIC_CONNECTED_OFFLINE='󱈸󰛳'
+readonly ICON_GENERIC_NOT_CONNECTED='󰲝'
+readonly ICON_GENERIC_OFF='󰲜'
+

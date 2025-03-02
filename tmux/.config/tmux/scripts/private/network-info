@@ -1,0 +1,51 @@
+#!/bin/bash
+
+current-interface()
+{
+	local output
+	output=$(route -n get default | grep '^[[:space:]]*interface: .*$')
+	if [[ $? != 0 ]]
+	then
+		return 1
+	fi
+
+	printf '%s' "${output##* }"
+}
+
+connection-type()
+{
+	local interface=$1
+
+	local output
+	output=$(networksetup -listallhardwareports | grep -B 1 "^Device: $interface\$" | head -n 1)
+	if [[ $? != 0 ]]
+	then
+		return 1
+	fi
+
+	printf '%s' "${output#Hardware Port: }"
+}
+
+interface=$(current-interface)
+if [[ $? != 0 ]]
+then
+	printf 'Error: failed to determine current interface'
+	exit
+fi
+
+connection_type=$(connection-type "$interface")
+if [[ $? != 0 ]]
+then
+	printf 'Error: failed to determine connection type'
+	exit
+fi
+
+#printf '"%s"' "$connection_type"
+
+
+OLD_IFS="$IFS"
+IFS=$'\n'
+lines=($(networksetup -getinfo 'Wi-Fi'))
+IFS="$OLD_IFS"
+
+printf " %s \n" "${lines[@]}"

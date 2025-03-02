@@ -1,0 +1,6 @@
+#!/bin/bash
+
+source ~/.config/tmux/scripts/impl/network-utils
+
+network-icon
+
