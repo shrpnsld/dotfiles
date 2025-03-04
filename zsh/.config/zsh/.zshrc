@@ -1,4 +1,4 @@
-fpath=(~/.config/zsh/plugins $fpath)
+fpath=($ZDOTDIR/plugins $fpath)
 
 #
 # Options
@@ -12,7 +12,7 @@ setopt HIST_IGNORE_SPACE
 #
 # Prompt
 
-source ~/.config/zsh/plugins/git-pretty-status
+source $ZDOTDIR/plugins/git-pretty-status
 
 PROMPT='
 %F{blue}󰝰 %~%f$(__git_pretty_status)
@@ -34,5 +34,6 @@ export KEYTIMEOUT=1
 #
 # Aliases
 
-alias tmux='/usr/local/bin/tmux attach \; choose-tree -s || /usr/local/bin/tmux new-session -n ""'
+source $ZDOTDIR/aliases/tmux
+source $ZDOTDIR/aliases/ranger
 

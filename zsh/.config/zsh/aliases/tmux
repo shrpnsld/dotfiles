@@ -1,0 +1,1 @@
+alias tmux='/usr/local/bin/tmux attach \; choose-tree -s || /usr/local/bin/tmux new-session -n ""'
