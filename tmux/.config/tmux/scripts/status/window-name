@@ -36,6 +36,50 @@ print-icon()
 	esac
 }
 
+component-count-greater-than()
+{
+	local path=$1
+	local count=$2
+
+	local component_count=0
+	local index
+	for (( index = 0; index < ${#path}; ++index ))
+	do
+		local character="${path:$index:1}"
+		if [[ $character != '/' ]]
+		then
+			continue
+		fi
+
+		(( ++component_count ))
+		if (( component_count > count))
+		then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+shorten-path()
+{
+	local path=$1
+
+	if (( ${#path} <= 24 ))
+	then
+		printf '%s' "$path"
+		return
+	fi
+
+	if component-count-greater-than "$path" 2
+	then
+		path="${path:1}"
+		printf '/%s/.../%s' "${path%%/*}" "${path##*/}"
+	else
+		printf '/.../%s' "${path##*/}"
+	fi
+}
+
 if [ -n "$window_name" ]
 then
 	if [[ $option != '-i' ]]
@@ -60,9 +104,10 @@ fi
 relative_path="${current_path#$HOME}"
 if [[ $relative_path == $current_path ]]
 then
-	printf '󰆍 %s' "$current_path"
-	exit
+	current_path=$(shorten-path "$current_path")
+	printf '󰆍 %s/' "$current_path"
+else
+	relative_path=$(shorten-path "$relative_path")
+	printf '󰆍 ~%s/' "$relative_path"
 fi
-
-printf '󰆍 ~%s/' "$relative_path"
 
