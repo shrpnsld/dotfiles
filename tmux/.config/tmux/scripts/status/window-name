@@ -6,8 +6,6 @@ window_name=$3
 option=$4
 icon=$5
 
-current_shell=${SHELL##*/}
-
 print-icon()
 {
 	case "$1" in
@@ -94,6 +92,7 @@ then
 	exit
 fi
 
+current_shell=${SHELL##*/}
 if [[ $current_command != $current_shell ]]
 then
 	print-icon "$current_command"
