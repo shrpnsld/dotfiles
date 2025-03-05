@@ -5,7 +5,7 @@ pane_height=$2
 current_path=$3
 cmd="${@:4}"
 
-if (( $pane_width / 2 >= $pane_height ))
+if (( ($pane_width * 10) / 21 >= $pane_height ))
 then
 	\tmux split-window -h -c "$current_path" ${cmd[@]}
 else
