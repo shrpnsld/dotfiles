@@ -61,3 +61,9 @@ done
 source $ZDOTDIR/aliases/tmux
 source $ZDOTDIR/aliases/ranger
 
+#
+# Syntax highlight
+
+source /usr/local/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+FAST_HIGHLIGHT[chroma-man]= # fixing freeze on typing 'man' command
+
