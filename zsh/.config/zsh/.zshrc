@@ -1,3 +1,5 @@
+eval "$(/usr/local/bin/brew shellenv)"
+
 fpath=($ZDOTDIR/plugins $fpath)
 
 #
