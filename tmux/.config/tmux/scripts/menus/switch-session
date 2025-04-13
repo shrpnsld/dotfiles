@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BORDER_FG=$(\tmux display-message -p '#{@CS_MENU_BORDER_FG}')
 SELECTED_FG=$(\tmux display-message -p '#{@CS_MENU_SELECTED_FG}')

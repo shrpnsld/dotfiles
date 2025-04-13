@@ -1,4 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+ceil()
+{
+	local number=$1
+
+	if [[ $number == *.* ]]
+	then
+		number="${number%.*}"
+		last_digit="${number: -1}"
+		(( ++last_digit ))
+		number="${number:0:${#number}-1}$last_digit"
+	fi
+
+	printf '%d' $number
+}
+
+readonly states=( ▁ ▂ ▃ ▄ ▅ ▆ ▇ ) # █
 
 output=$(top -l 1 | grep -o '^CPU usage: [0-9]\{1,3\}\.[0-9]\{1,2\}% user')
 output="${output#CPU usage: }"
@@ -8,5 +25,19 @@ output=$(top -l 1 | grep -o '^PhysMem: [0-9]\+[a-zA-Z] used')
 output="${output#PhysMem: }"
 memory_used="${output% used}"
 
-printf '󰊚 %6.2f%% %s' $cpu_load "$memory_used"
+step_size=$(( 100 / ( ${#states[@]} - 1 ) ))
+
+cpu_load_int=$(ceil $cpu_load)
+index=0
+while (( index < ${#states[@]} ))
+do
+	if (( cpu_load_int < step_size * (index + 1) ))
+	then
+		break
+	fi
+
+	(( ++index ))
+done
+
+printf 'cpu: %s  mem: %s' "${states[$index]}" "$memory_used"
 

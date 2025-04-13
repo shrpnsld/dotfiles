@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 POWER_STATE_NOT_CHARGING=1
 POWER_STATE_CHARGING=2

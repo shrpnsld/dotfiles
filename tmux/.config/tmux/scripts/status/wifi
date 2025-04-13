@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source ~/.config/tmux/scripts/private/network
 source ~/.config/tmux/scripts/private/wifi

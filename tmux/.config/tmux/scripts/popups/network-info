@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-source ~/.config/tmux/scripts/impl/popup-utils
-source ~/.config/tmux/scripts/impl/network-utils
+source ~/.config/tmux/scripts/private/popup-utils
+source ~/.config/tmux/scripts/private/network-utils
 
 network-info
 title="$NETWORK_INFO_RETURN__TITLE"
