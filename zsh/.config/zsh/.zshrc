@@ -69,3 +69,14 @@ source $ZDOTDIR/aliases/ranger
 source /usr/local/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 FAST_HIGHLIGHT[chroma-man]= # fixing freeze on typing 'man' command
 
+#
+# Stuff
+
+__exit-shell()
+{
+	exit
+}
+
+zle -N __exit-shell
+bindkey -M vicmd '^x' __exit-shell
+
