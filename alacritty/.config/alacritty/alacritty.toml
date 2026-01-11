@@ -16,7 +16,7 @@
 	bold = { family = "Hack Nerd Font", style = "Bold" }
 	italic = { family = "Hack Nerd Font", style = "Italic" }
 	bold_italic = { family = "Hack Nerd Font", style = "Bold Italic" }
-	size = 16
+	size = 14
 	offset = { x = 1, y = 0 }
 	builtin_box_drawing = false # alacritty's built-in box drawing draws less promiment characters
 
