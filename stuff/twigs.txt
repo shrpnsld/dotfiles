@@ -1,0 +1,88 @@
+.first
+	PROJECTS_DIR="$HOME/Projects"
+	DOTFILES_DIR="$PROJECTS_DIR/dotfiles"
+	mkdir -p "$PROJECTS_DIR"
+
+alacritty / pkgmgr
+	nest-in-install alacritty
+	stow --target="$HOME" alacritty
+
+zsh / dotfiles zsh-fast-syntax-highlighting
+	stow --target="$HOME" zsh
+	chsh -s $(which zsh)
+
+zsh-fast-syntax-highlighting / pkgmgr
+	nest-in-install zsh-fast-syntax-highlighting
+
+tmux / pkgmgr dotfiles nerd-fonts 'tmux'
+	nest-in-install tmux
+	cd "$DOTFILES_DIR"
+	stow --target="$HOME" tmux
+
+ranger / pkgmgr dotfiles git highlight nerd-fonts 'ranger'
+	nest-in-install ranger
+	cd "$DOTFILES_DIR"
+	stow --target="$HOME" ranger
+
+	mkdir -p ~/.config/ranger/plugins/
+
+	# icons
+	cd "$DOTFILES_DIR"/stuff/ranger-devicons
+	git submodule update --init
+	ln -sf "$DOTFILES_DIR"/stuff/ranger-devicons ~/.config/ranger/plugins/ranger-devicons
+
+nvim / pkgmgr dotfiles nerd-fonts ripgrep 'nvim'
+	nest-in-install nvim
+	cd "$DOTFILES_DIR"
+	stow --target="$HOME" nvim
+
+dotfiles / git '~/Projects/dotfiles/'
+	nest-in-install stow
+	git clone https://github.com/shrpnsld/dotfiles "$DOTFILES_DIR"
+	cd "$DOTFILES_DIR"
+	stow --target="$HOME" --dotfiles git
+
+ripgrep / pkgmgr 'ripgrep'
+	nest-in-install ripgrep
+
+git / pkgmgr 'git'
+	nest-in-install git
+
+highlight / pkgmgr 'highlight'
+	nest-in-install highlight
+
+nerd-fonts / [macos] pkgmgr
+	nest-in-install font-hack-nerd-font
+
+pkgmgr / [macos] brew
+	nest-in-install() {
+		brew install $@
+	}
+
+	nest-in-uninstall() {
+		brew uninstall $@
+	}
+
+	nest-in-autoremove() {
+		brew autoremove
+	}
+
+brew / [macos] 'brew'
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+cleanup! / pkgmgr
+	if [ -d "$DOTFILES_DIR" ]
+	then
+		cd "$DOTFILES_DIR"
+		stow --target="$HOME" --delete tmux ranger nvim git
+		rm -rf "$DOTFILES_DIR"
+	fi
+
+	nest-in-uninstall tmux ranger neovim git stow highlight nerd-fonts alacritty
+	nest-in-autoremove
+
+	if command -v brew
+	then
+		yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+	fi
+
